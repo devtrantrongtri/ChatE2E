@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -11,24 +11,28 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     
-    let user = await this.userModel.create({name: createUserDto.name, email: createUserDto.email, password: createUserDto.password});
+    const user = await this.userModel.create({name: createUserDto.name, email: createUserDto.email, password: createUserDto.password});
     return  user;
     // return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return this.userModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  // have to convert string to objectid to using findById()
+  async findOne(id: string) {
+    const objectId = new mongoose.Types.ObjectId(id); 
+    return this.userModel.findById(objectId).exec();
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const objectId = new mongoose.Types.ObjectId(id); 
+    return this.userModel.findByIdAndUpdate(objectId, updateUserDto, { new: true }).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const objectId = new mongoose.Types.ObjectId(id); 
+    return this.userModel.deleteOne(objectId).exec();
   }
 }
