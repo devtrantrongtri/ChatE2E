@@ -1,10 +1,10 @@
-import { IsEmpty } from "class-validator";
+import {  IsNotEmpty } from "class-validator";
 
 export class CreateMessageDto {
-    @IsEmpty()
+    // @IsNotEmpty()
     senderId: string;
-    @IsEmpty()
+    // @IsNotEmpty()
     receiverId: string;
-    
+    @IsNotEmpty()
     message: string;
 }

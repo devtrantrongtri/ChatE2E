@@ -42,6 +42,7 @@ export class UsersController {
   login(@Request() req): any {
     try {
       return { 
+        user : req.user,
         msg: 'User logged in' 
       };
     } catch (error) {

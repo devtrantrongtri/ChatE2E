@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Message } from './schemas/message.schemas';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class MessagesService {
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
-  }
+  constructor(@InjectModel(Message.name) private messageModel: Model<Message>) {}
+  
 
   findAll() {
     return `This action returns all messages`;
@@ -23,4 +25,15 @@ export class MessagesService {
   remove(id: number) {
     return `This action removes a #${id} message`;
   }
+
+  async createMessage(createMessageDto: CreateMessageDto) {
+    const message = await this.messageModel.create(createMessageDto);
+    return {
+      message,
+      messages: createMessageDto.message,
+      msg:"created message"
+    }
+  }
 }
+ 
+
