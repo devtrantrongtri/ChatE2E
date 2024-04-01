@@ -10,10 +10,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   
-  // @Get()
-  // findAllUser() {
-  //   return this.usersService.findAll();
-  // }
+
 
   // @Get(':id')
   // findDetail(@Param('id') id: string) {
@@ -52,9 +49,9 @@ export class UsersController {
       }
     }
   }
-  // Get / protected
+ 
   // @UseGuards(AuthenticatedGuard)
-  // @Get('/protected')
+  // @Get('/')
   // getHello(@Request() req): string {
   //   return req.user;
   // }
@@ -63,5 +60,10 @@ export class UsersController {
   logout(@Request() req): any {
     req.session.destroy();
     return { msg: 'The user session has ended' }
+  }
+  @UseGuards(AuthenticatedGuard)
+  @Get()
+  findAllUser() {
+    return this.usersService.findAll();
   }
 }

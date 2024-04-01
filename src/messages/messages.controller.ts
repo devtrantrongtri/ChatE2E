@@ -45,4 +45,13 @@ export class MessagesController {
     createMessageDto.receiverId = receiverID;
     return this.messagesService.createMessage(createMessageDto);
   }
+  @UseGuards(AuthenticatedGuard)
+  @Get(':id')
+  getMessages(
+    @Param('id') receiverID: string,
+    @Req() req){
+
+       const senderID = req.user.userId; 
+       return this.messagesService.getMessages(senderID, receiverID);
+    }
 }

@@ -31,7 +31,8 @@ export class MessagesService {
   }
 
   async createMessage(createMessageDto: CreateMessageDto) {
-    const message = await this.messageModel.create(createMessageDto);
+    try {
+      const message = await this.messageModel.create(createMessageDto);
     let conversation = await this.conversationModel.findOne({
       participants: { $all: [createMessageDto.senderId, createMessageDto.receiverId] },
     });
@@ -51,7 +52,20 @@ export class MessagesService {
       messages: createMessageDto.message,
       msg:"created message"
     }
+  
+    } catch (error) {
+      return error
+    }
   }
-}
- 
+  async getMessages(senderID : string, receiverID : string){
+    let conversation = await this.conversationModel.findOne({
+      participants: { $all: [senderID, receiverID] },
+    }).populate('messageIds'); // direct to conversation.messageIds
+    if(!conversation){
+      return [];
+    }
+    const messages = conversation;
+    return messages
+  }
 
+}
