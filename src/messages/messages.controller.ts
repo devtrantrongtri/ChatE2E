@@ -3,6 +3,7 @@ import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('messages')
 export class MessagesController {
@@ -32,6 +33,7 @@ export class MessagesController {
   // remove(@Param('id') id: string) {
   //   return this.messagesService.remove(+id);
   // }
+  @ApiTags('messages')
   @UseGuards(AuthenticatedGuard)
   @Post(':id')
   sendMessage(
@@ -45,6 +47,7 @@ export class MessagesController {
     createMessageDto.receiverId = receiverID;
     return this.messagesService.createMessage(createMessageDto);
   }
+  @ApiTags('messages')
   @UseGuards(AuthenticatedGuard)
   @Get(':id')
   getMessages(

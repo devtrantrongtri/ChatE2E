@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -28,12 +29,14 @@ export class UsersController {
   // }
 
   // create a new user
+  @ApiTags('auth')
   @Post('/signup')
   createUser(@Body() createUserDto: CreateUserDto) {
  
       return this.usersService.createUser(createUserDto);
     
   }
+  @ApiTags('auth')
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   login(@Request() req): any {
@@ -56,11 +59,14 @@ export class UsersController {
   //   return req.user;
   // }
   //Get / logout
+  @ApiTags('auth')
   @Get('/logout')
   logout(@Request() req): any {
     req.session.destroy();
     return { msg: 'The user session has ended' }
   }
+  @ApiTags('user')
+
   @UseGuards(AuthenticatedGuard)
   @Get()
   findAllUser() {
