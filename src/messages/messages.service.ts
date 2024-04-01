@@ -4,10 +4,14 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message } from './schemas/message.schemas';
 import { Model } from 'mongoose';
+import { Conversation } from 'src/conversation/schemas/conversation.schema';
 
 @Injectable()
 export class MessagesService {
-  constructor(@InjectModel(Message.name) private messageModel: Model<Message>) {}
+  constructor(
+    @InjectModel(Message.name) private messageModel: Model<Message>,
+    @InjectModel(Conversation.name) private conversationModel: Model<Conversation>) {}
+
   
 
   findAll() {
@@ -28,6 +32,20 @@ export class MessagesService {
 
   async createMessage(createMessageDto: CreateMessageDto) {
     const message = await this.messageModel.create(createMessageDto);
+    let conversation = await this.conversationModel.findOne({
+      participants: { $all: [createMessageDto.senderId, createMessageDto.receiverId] },
+    });
+
+    if (!conversation) {
+      conversation = await this.conversationModel.create({
+        participants: [createMessageDto.senderId, createMessageDto.receiverId],
+      });
+    }
+
+    // Thêm tin nhắn mới vào cuộc trò chuyện
+    conversation.messageIds.push(message.id);
+    await conversation.save();
+
     return {
       message,
       messages: createMessageDto.message,
