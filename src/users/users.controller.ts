@@ -52,11 +52,11 @@ export class UsersController {
     }
   }
   // Get / protected
-  @UseGuards(AuthenticatedGuard)
-  @Get('/protected')
-  getHello(@Request() req): string {
-    return req.user;
-  }
+  // @UseGuards(AuthenticatedGuard)
+  // @Get('/protected')
+  // getHello(@Request() req): string {
+  //   return req.user;
+  // }
   //Get / logout
   @Get('/logout')
   logout(@Request() req): any {

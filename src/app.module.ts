@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { MessagesModule } from './messages/messages.module';
+import { ConversationModule } from './conversation/conversation.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    MessagesModule,
+    ConversationModule,
    
   ],
   controllers: [AppController],
