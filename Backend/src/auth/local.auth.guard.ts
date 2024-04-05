@@ -10,5 +10,4 @@ export class LocalAuthGuard extends AuthGuard("local") {
     }
 }
 
-// không hiểu code này :)))
 

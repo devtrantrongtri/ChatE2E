@@ -11,7 +11,10 @@ export class ConversationController {
   // create(@Body() createConversationDto: CreateConversationDto) {
   //   return this.conversationService.create(createConversationDto);
   // }
-
+  @Get()
+  findAll(){
+    return this.conversationService.findAll();
+  }
   // @Get()
   // findAll() {
   //   return this.conversationService.findAll();

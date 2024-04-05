@@ -12,9 +12,9 @@ export class ConversationService {
   //   return 'This action adds a new conversation';
   // }
 
-  // findAll() {
-  //   return `This action returns all conversation`;
-  // }
+  findAll() {
+    return this.conversationModel.find();
+  }
 
   // findOne(id: number) {
   //   return `This action returns a #${id} conversation`;
