@@ -1,18 +1,48 @@
 // import Image from "next/image";
-
-import Home from '@/components/Home/Home'
-import Tittle from '@/components/TittleApp/Tittle'
-import Link from 'next/link'
-import React from 'react'
+import { SiNestjs, SiNextdotjs } from "react-icons/si";
+import Home from "@/components/Chat/Chat";
+import Tittle from "@/components/TittleApp/Tittle";
+import Link from "next/link";
+import React from "react";
+import { BiLogoMongodb } from "react-icons/bi";
+import { MdEnhancedEncryption } from "react-icons/md";
+import { TbBrandSocketIo } from "react-icons/tb";
 
 export default function HomePage() {
   return (
-    <div>
-      <Home>
-
-      </Home>
+    <div className="bg-violet-950 h-screen text-3xl">
+      <nav className="pr-5">
+        <div>
+          <Link href="https://sv.ut.edu.vn/sinh-vien-dang-nhap.html">
+            <img
+              src="https://sv.ut.edu.vn/Content/AConfig/images/sv_header_login.png"
+              alt="logo"
+            />
+          </Link>
+        </div>
+        
+      </nav>
+      <div className="text-5xl font-extrabold">
+        <span className="p-4 flex justify-center bg-clip-text text-transparent bg-gradient-to-r from-slate-100 to-violet-500">
+          Chat Encryption
+        </span>
+      </div>
+      <nav className="float justify-center text-6xl">
+        <div className="iconApp bg-white text-rose-700 rounded-full"><SiNestjs /></div>
+        <div className="iconApp text-white "><SiNextdotjs /></div>
+        <div className="iconApp bg-white text-green-900 rounded-full"><BiLogoMongodb /></div>
+        <div className="iconApp bg-white rounded-full"><TbBrandSocketIo /></div>       
+      </nav>
+      <div className="text-center">
+          <Link className="p-1 text-white m-2 rounded-md " href="/login">
+            Login
+          </Link>
+          <Link className="p-1 m-2 text-white rounded-md " href="/signup">
+            Sign up
+          </Link>
+        </div>
     </div>
-  )
+  );
 }
 
 // export default function Home() {

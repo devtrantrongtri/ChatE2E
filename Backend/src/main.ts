@@ -28,7 +28,11 @@ async function bootstrap() {
   .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
+   // Cấu hình CORS
+  app.enableCors({
+  origin: 'http://localhost:3000', // Thay đổi địa chỉ nguồn phù hợp
+  credentials: true,
+  });
   await app.listen(configService.get('PORT'));
 }
 bootstrap();

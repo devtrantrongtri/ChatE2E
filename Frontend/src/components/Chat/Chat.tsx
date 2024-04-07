@@ -2,9 +2,10 @@ import React from "react";
 import SideBar from "../SideBar/SideBar";
 import TextContainer from "../TextContainer/TextContainer";
 import HeaderSidebar from "../SideBar/HeaderSidebar";
-import { CiLogout } from "react-icons/ci"; 
 
-function Home() {
+
+function ChatComponents() {
+  
   return (
     <div className="flex h-screen overflow-hidden">
         
@@ -22,4 +23,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default ChatComponents;

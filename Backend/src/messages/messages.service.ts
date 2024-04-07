@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Message } from './schemas/message.schemas';
 import { Model } from 'mongoose';
 import { Conversation } from 'src/conversation/schemas/conversation.schema';
+import { appendFile } from 'fs';
 
 @Injectable()
 export class MessagesService {
