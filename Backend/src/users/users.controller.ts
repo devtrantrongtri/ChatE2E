@@ -66,10 +66,15 @@ export class UsersController {
     return { msg: 'The user session has ended' }
   }
   @ApiTags('user')
-
   @UseGuards(AuthenticatedGuard)
   @Get()
   findAllUser() {
     return this.usersService.findAll();
+  }
+  @ApiTags('user')
+  @UseGuards(AuthenticatedGuard)
+  @Get('/:id')
+  findAllUserNoIts(@Param('id') id:string) {
+    return this.usersService.findAllNoIts(id);
   }
 }

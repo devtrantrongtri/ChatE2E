@@ -29,8 +29,10 @@ function Login() {
 
     if (response.ok) {
       // Redirect to home page or dashboard upon successful login
-      console.log(response)
-      router.push('/chat')
+
+      const data = await response.json();
+      console.log(data);
+      router.push(`/chat/${data.user.userId}`);
     } else {
       // Handle login error
       setError('Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin đăng nhập.');

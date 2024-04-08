@@ -40,7 +40,18 @@ async isMatchPass(password: string,hash: string){
   }
 
   async findAll() {
-    return this.userModel.find().exec();
+    const users = await this.userModel.find().exec();
+    return users.map(user => {
+        const { password, ...rest } = user.toObject();
+        return rest;
+    });
+  }
+  async findAllNoIts(id: string) {
+    const users = await this.userModel.find({ _id: { $ne: id } }).exec();
+    return users.map(user => {
+      const { password, ...rest } = user.toObject();
+      return rest;
+    });
   }
   async getUser(username:string){
     const user=await this.userModel.findOne({username: username}).exec();

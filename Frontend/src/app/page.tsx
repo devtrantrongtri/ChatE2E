@@ -9,6 +9,7 @@ import { MdEnhancedEncryption } from "react-icons/md";
 import { TbBrandSocketIo } from "react-icons/tb";
 
 export default function HomePage() {
+  
   return (
     <div className="bg-violet-950 h-screen text-3xl">
       <nav className="pr-5">

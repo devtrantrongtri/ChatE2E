@@ -1,11 +1,52 @@
-import React from 'react'
-import IncomeMessage from './IncomeMessage'
+import React, { useEffect, useState } from 'react'
+import { getConversation } from "@/utils/getConversationByUserId";
 
-function Messages() {
+interface TextContainerProps{
+  receiverId: string | undefined,
+
+}
+const Messages: React.FC<TextContainerProps> = ({receiverId})=> {
+
+  const [mess, setMess] = useState<Response | null>();
+
+  useEffect(() => {
+    const fetchConversation = async () => {
+      try {
+        if (receiverId) {
+          const response = await getConversation(receiverId);
+          if (Array.isArray(response)) { 
+            setMess(null);
+          } else {
+            const messages = response.messageIds.map((message: any) => {
+              // Trích xuất các thuộc tính của mỗi message
+              const { _id, senderId, receiverId, message: messageContent, createdAt } = message;
+              return {
+                _id,
+                senderId,
+                receiverId,
+                messageContent,
+                createdAt
+              };
+            });
+            setMess(messages); 
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchConversation();
+  },[receiverId,mess]);
+
+
   return (
+
     <div className="h-screen overflow-y-auto p-4 pb-36 bottom-0">
-      {/* Incoming Message */}
-      <div className="flex mb-4 cursor-pointer">
+      {Array.isArray(mess) && mess.map( mess => {
+  // Kiểm tra nếu senderId của tin nhắn bằng receiverId (tin nhắn đi ra)
+  if (mess.senderId === receiverId) {
+    return (
+       <div className="flex mb-4 cursor-pointer" key={mess._id}>
         <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
           <img
             src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
@@ -14,173 +55,29 @@ function Messages() {
           />
         </div>
         <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">Hey Bob, how's it going?</p>
+          <p className="text-gray-700">{mess.messageContent}</p>
         </div>
       </div>
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">Hey Bob, how's it going?</p>
-        </div>
+    );
+  } else {
+    // Nếu không, hiển thị tin nhắn đến
+    return (
+     
+      <div className="flex justify-end mb-4 cursor-pointer" key={mess._id}>
+      <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
+        <p>{mess.messageContent}</p>
       </div>
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">Hey Bob, how's it going?</p>
-        </div>
+      <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
+        <img
+          src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
+          alt="My Avatar"
+          className="w-8 h-8 rounded-full"
+        />
       </div>
-      {/* Outgoing Message */}
-      <div className="flex justify-end mb-4 cursor-pointer">
-        <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-          <p>
-            Hi Alice! I'm good, just finished a great book. How about you?
-          </p>
-        </div>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-          <img
-            src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="My Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-      {/* Incoming Message */}
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">
-            That book sounds interesting! What's it about?
-          </p>
-        </div>
-      </div>
-      {/* Outgoing Message */}
-      <div className="flex justify-end mb-4 cursor-pointer">
-        <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-          <p>
-            It's about an astronaut stranded on Mars, trying to survive.
-            Gripping stuff!
-          </p>
-        </div>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-          <img
-            src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="My Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-      {/* Incoming Message */}
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">
-            I'm intrigued! Maybe I'll borrow it from you when you're done?
-          </p>
-        </div>
-      </div>
-      {/* Outgoing Message */}
-      <div className="flex justify-end mb-4 cursor-pointer">
-        <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-          <p>Of course! I'll drop it off at your place tomorrow.</p>
-        </div>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-          <img
-            src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="My Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-      {/* Incoming Message */}
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">Thanks, you're the best!</p>
-        </div>
-      </div>
-      {/* Outgoing Message */}
-      <div className="flex justify-end mb-4 cursor-pointer">
-        <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-          <p>Anytime! Let me know how you like it. 😊</p>
-        </div>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-          <img
-            src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="My Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-      {/* Incoming Message */}
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">So, pizza next week, right?</p>
-        </div>
-      </div>
-      {/* Outgoing Message */}
-      <div className="flex justify-end mb-4 cursor-pointer">
-        <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-          <p>Absolutely! Can't wait for our pizza date. 🍕</p>
-        </div>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-          <img
-            src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="My Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-      {/* Incoming Message */}
-      <div className="flex mb-4 cursor-pointer">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-          <img
-            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-        <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-          <p className="text-gray-700">Hoorayy!!</p>
-        </div>
-      </div>
-      <IncomeMessage></IncomeMessage>
+    </div>
+    );
+  }
+})}
     </div>
   )
 }
