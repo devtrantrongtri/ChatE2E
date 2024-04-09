@@ -41,7 +41,7 @@ const Messages: React.FC<TextContainerProps> = ({receiverId})=> {
 
   return (
 
-    <div className="h-screen overflow-y-auto p-4 pb-36 bottom-0">
+    <div className="h-screen overflow-y-auto p-10 pb-60 ">
       {Array.isArray(mess) && mess.map( mess => {
   // Kiểm tra nếu senderId của tin nhắn bằng receiverId (tin nhắn đi ra)
   if (mess.senderId === receiverId) {
@@ -78,6 +78,7 @@ const Messages: React.FC<TextContainerProps> = ({receiverId})=> {
     );
   }
 })}
+
     </div>
   )
 }

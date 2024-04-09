@@ -18,7 +18,7 @@ interface User {
   _id: string;
   username: string;
   email: string;
-  avatarUrl?: string;
+  avatarUrl: string;
   receiverId?: string;
   // Add other properties if necessary
 }
@@ -26,13 +26,14 @@ interface User {
 export default function ChatComponents ({ params }: { params: { userid: string } }){
   const [users,setUsers] = useState<User[]>([]);
   const [friendId,setFriend] = useState<string>();
+  const [username,setUsername] = useState<string>('chatApp');
+  const [userAvartar,setuserAvartar] = useState<string>('https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato');
   const router = useRouter();
 
   useEffect(() => {
      let fetchUsers = async ()  =>{
         try {
           const userList = await getAllUsers(params.userid);
-          console.log('userlist :' +userList)
           setUsers(userList);
         } catch (error) {
           console.log(error);
@@ -55,7 +56,7 @@ export default function ChatComponents ({ params }: { params: { userid: string }
        <div  className="overflow-y-auto h-screen p-3 mb-9 pb-20">
            {users.map(user => (
           
-          <div onClick={()=>{setFriend(user._id),console.log(friendId)}}  key={user._id} className="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md">
+          <div onClick={()=>{setFriend(user._id),setUsername(user.username),setuserAvartar(user.avatarUrl)}}  key={user._id} className="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md">
             <div className="w-12 h-12 bg-gray-300 rounded-full mr-3">
               <img
                 src={user.avatarUrl ? user.avatarUrl : "https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"} alt="User Avatar" className="w-12 h-12 rounded-full"/>
@@ -70,7 +71,7 @@ export default function ChatComponents ({ params }: { params: { userid: string }
       </div>
       
       {/* Main Chat Area */}
-        <TextContainer receiverId = {friendId}></TextContainer>
+        <TextContainer avartar={userAvartar} username={username} receiverId = {friendId}></TextContainer>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 // import Image from "next/image";
 import { SiNestjs, SiNextdotjs } from "react-icons/si";
-import Home from "@/components/Chat/Chat";
 import Tittle from "@/components/TittleApp/Tittle";
 import Link from "next/link";
 import React from "react";
