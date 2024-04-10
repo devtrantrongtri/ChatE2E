@@ -1,13 +1,20 @@
+import Link from 'next/link'
 import React from 'react'
 
 function Tittle() {
   return (
-      <div className ="text-5xl font-extrabold bg-violet-950">
-  <span className="p-4 flex justify-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
+      <div className='bg-slate-800'>
+        
+  <nav>
+    <Link href={'/'}>
+    <div className ="text-5xl font-extrabold ">
+  <span className="p-4 flex justify-center bg-clip-text text-transparent bg-slate-400">
     Chat Encryption 
   </span>
 </div>
-
+    </Link>
+  </nav>
+      </div>
 
   )
 }

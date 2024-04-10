@@ -1,8 +1,8 @@
 // hàm này sẽ thực thi dựa trên idUser hiện tại và idUser truyền vào hàm
 
-export const getConversation = async (receiverId : string | undefined) => {
+export const getConversation = async (receiverId : string | undefined)  => {
   if(receiverId === undefined){
-    return [];
+    return null;
   }else{
     const response = await fetch(`http://localhost:4041/messages/${receiverId}`,{credentials: 'include'});
       if (!response.ok) {

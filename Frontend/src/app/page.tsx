@@ -10,7 +10,7 @@ import { TbBrandSocketIo } from "react-icons/tb";
 export default function HomePage() {
   
   return (
-    <div className="bg-violet-950 h-screen text-3xl">
+    <div className="bg-slate-900 h-screen text-3xl pt-11">
       <nav className="pr-5">
         <div>
           <Link href="https://sv.ut.edu.vn/sinh-vien-dang-nhap.html">
@@ -27,17 +27,17 @@ export default function HomePage() {
           Chat Encryption
         </span>
       </div>
-      <nav className="float justify-center text-6xl">
+      <nav className="float justify-center text-6xl p-10">
         <div className="iconApp bg-white text-rose-700 rounded-full"><SiNestjs /></div>
         <div className="iconApp text-white "><SiNextdotjs /></div>
         <div className="iconApp bg-white text-green-900 rounded-full"><BiLogoMongodb /></div>
         <div className="iconApp bg-white rounded-full"><TbBrandSocketIo /></div>       
       </nav>
-      <div className="text-center">
-          <Link className="p-1 text-white m-2 rounded-md " href="/login">
+      <div className="text-center pt-10">
+          <Link className="p-3 text-white m-2 rounded-md hover:text-green-600 active:text-green-700" href="/login">
             Login
           </Link>
-          <Link className="p-1 m-2 text-white rounded-md " href="/signup">
+          <Link className="p-1 m-2 text-white rounded-md hover:text-green-600 active:text-green-700" href="/signup">
             Sign up
           </Link>
         </div>

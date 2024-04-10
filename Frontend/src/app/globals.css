@@ -19,7 +19,7 @@ a {
 }
 
 nav {
-  height: 150px;
+  /* height: 150px; */
   display: flex;
   gap: 30px;
   align-items: center;
