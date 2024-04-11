@@ -45,7 +45,7 @@ const SendMessage : React.FC<SendMessageProps> = ({receiverId}) => {
         <input
           type="text"
           placeholder={`Type a message...`}
-          className="w-full p-2 rounded-md border bg-slate-900 border-gray-400 focus:outline-none focus:border-blue-500" value={messageSent} onChange={(e) => setmessageSent(e.target.value)}
+          className="text-white w-full p-2 rounded-md border bg-slate-900 border-gray-400 focus:outline-none focus:border-blue-500" value={messageSent} onChange={(e) => setmessageSent(e.target.value)}
         />
         <button onClick={handleSubmit}   className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2">
           Send
