@@ -9,7 +9,7 @@ export const getConversation = async (receiverId : string | undefined)  => {
         throw new Error('Failed to fetch users');
       }else{
 
-        const conversation = await response.json();
+        const conversation = await response.json(); 
         return conversation 
       }
   }  

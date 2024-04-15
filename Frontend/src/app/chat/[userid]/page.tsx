@@ -73,7 +73,7 @@ export default function ChatComponents ({ params }: { params: { userid: string }
       </div>
       
       {/* Main Chat Area */}
-        <TextContainer avartar={userAvartar} username={username} receiverId = {friendId}></TextContainer>
+        <TextContainer  username={username} receiverId = {friendId}></TextContainer>
     </div>
   );
 }

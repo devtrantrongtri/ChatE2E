@@ -1,18 +1,19 @@
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
+
 interface SendMessageProps {
   receiverId: string | undefined;
+  updateMessages: () => void; // Function to update messages
 }
-const SendMessage: React.FC<SendMessageProps> = ({ receiverId }) => {
-  const [messageSent, setmessageSent] = useState("");
+
+const SendMessage: React.FC<SendMessageProps> = ({ receiverId, updateMessages }) => {
+  const [messageSent, setMessageSent] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      // Validation
       if (!messageSent) {
         setStatus("Vui lòng nhập đầy đủ và đúng yêu cầu!");
         return { status };
@@ -31,38 +32,32 @@ const SendMessage: React.FC<SendMessageProps> = ({ receiverId }) => {
       );
       setLoading(false);
       if (response.ok) {
-        const receiverIdtemp = receiverId;
-        receiverId = receiverIdtemp;
         setStatus("success");
-        setmessageSent("");
-        // console.log(status)
+        setMessageSent("");
+        updateMessages(); // Update messages after sending a message
       } else {
-        // Handle Status
         setStatus("Không được để trống");
       }
     } catch (error) {
       alert(error);
     }
-    // Send sign up request to the server
   };
 
   return (
     <footer className="bg-slate-900  border-gray-300 p-4 absolute bottom-0 w-3/4">
       <div className="flex items-center">
-      {/* xử lý loading khi fetch to database */}
         <input
           type="text"
           placeholder={`Type a message...`}
           className="text-white w-full p-2 rounded-md border bg-slate-900 border-gray-400 focus:outline-none focus:border-blue-500"
           value={messageSent}
-          onChange={(e) => setmessageSent(e.target.value)}
+          onChange={(e) => setMessageSent(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSubmit(e);
             }
           }}
         />
-
         <button
           onClick={handleSubmit}
           className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2 hover:bg-indigo-400 active:blur-sm"

@@ -1,28 +1,51 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import Messages from './Messages'
-import SendMessage from './SendMessage'
-import Tittle from '../TittleApp/Tittle'
+import React, { useEffect, useState } from 'react';
+import { getConversation } from "@/utils/getConversationByUserId";
+import { scrollToBottom } from '@/utils/scroll';
+import Messages from './Messages';
+import SendMessage from './SendMessage';
+import Tittle from '../TittleApp/Tittle';
 
-interface ChatProps {
-  receiverId: string | undefined
-  username: string | 'chatApp'
-  avartar : string 
+interface TextContainerProps {
+  receiverId: string | undefined,
+  username : string ,
 }
 
+interface Message {
+  message: string;
+  _id: string;
+  senderId?: string;
+  receiverId: string;
+  createAt: Date;
+}
 
-const TextContainer : React.FC<ChatProps> = ({receiverId,username}) => {
-  const [friendId, setFriendId] = useState<string | undefined>(receiverId);
+const TextContainer: React.FC<TextContainerProps> = ({ receiverId, username }) => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const updateMessages = async () => {
+    try {
+      setLoading(true);
+      const response = await getConversation(receiverId);
+      setLoading(false);
+      if (response === null) {
+        setMessages([]);
+      } else {
+        setMessages(response.messageIds);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // Update friendId when receiverId from props changes
-    setFriendId(receiverId??'');
-  }, [receiverId,setFriendId,Messages]);
+    updateMessages();
+  }, [receiverId]);
+
   return (
     <div className="flex-1">
       <Tittle></Tittle>
-      {/* Chat Header */}
       <header className="bg-slate-900  text-gray-700 border-b">
-        {/* <img className='round-full' src={avartar ? avartar : `https://placehold.co/200x/ffa8e4/ffffff.svg?text=-.-&font=Lato`} alt="avartar" /> */}
         <div
           className={`flex items-center  mb-4 cursor-pointer text-white p-2 rounded-md`}
         >
@@ -41,16 +64,14 @@ const TextContainer : React.FC<ChatProps> = ({receiverId,username}) => {
           <div className="flex-1  ">
             <h2 className="text-lg   font-semibold">{username}</h2>
             <h5>online</h5>
-            {/* <p className="text-gray-600">**********</p> */}
           </div>
         </div>
       </header>
-      {/* Chat Messages */}
-      <Messages receiverId={friendId} username={username}></Messages>
-      {/* Chat Input */}
-      <SendMessage receiverId={friendId}></SendMessage>
+      <Messages receiverId={receiverId} username={username} messages={messages} updateMessages={updateMessages} />
+      
+      <SendMessage receiverId={receiverId} updateMessages={updateMessages} />
     </div>
   );
-}
+};
 
-export default TextContainer
+export default TextContainer;
