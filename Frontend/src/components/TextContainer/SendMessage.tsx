@@ -1,58 +1,159 @@
-import React, { useEffect, useRef, useState } from 'react'
+
+import React, { useEffect, useRef, useState } from "react";
+import { BsFillSendFill } from "react-icons/bs";
 interface SendMessageProps {
-  receiverId: string | undefined
+  receiverId: string | undefined;
 }
-const SendMessage : React.FC<SendMessageProps> = ({receiverId}) => {
-  const [messageSent, setmessageSent] = useState('');
-  const [status, setStatus] = useState('');
-  useEffect(() => {
-    
-  }, [messageSent]);
+const SendMessage: React.FC<SendMessageProps> = ({ receiverId }) => {
+  const [messageSent, setmessageSent] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e : any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    // Validation
-    if (!messageSent ) {
-      setStatus('Vui lòng nhập đầy đủ và đúng yêu cầu!');
-      return;
+    try {
+      // Validation
+      if (!messageSent) {
+        setStatus("Vui lòng nhập đầy đủ và đúng yêu cầu!");
+        return { status };
+      }
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:4041/messages/${receiverId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ message: messageSent }),
+        }
+      );
+      setLoading(false);
+      if (response.ok) {
+        const receiverIdtemp = receiverId;
+        receiverId = receiverIdtemp;
+        setStatus("success");
+        setmessageSent("");
+        // console.log(status)
+      } else {
+        // Handle Status
+        setStatus("Không được để trống");
+      }
+    } catch (error) {
+      alert(error);
     }
-
     // Send sign up request to the server
-    const response = await fetch(`http://localhost:4041/messages/${receiverId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ message: messageSent}),
-    });
-
-    if (response.ok) {
-      setStatus('success');
-      setmessageSent('');
-      console.log(status)
-    } else {
-      // Handle Status
-      setStatus('Không được để trống');
-    }
   };
 
-  
   return (
-      <footer className="bg-slate-900  border-gray-300 p-4 absolute bottom-0 w-3/4">
-    <div className="flex items-center">
+    <footer className="bg-slate-900  border-gray-300 p-4 absolute bottom-0 w-3/4">
+      <div className="flex items-center">
+      {/* xử lý loading khi fetch to database */}
         <input
           type="text"
           placeholder={`Type a message...`}
-          className="text-white w-full p-2 rounded-md border bg-slate-900 border-gray-400 focus:outline-none focus:border-blue-500" value={messageSent} onChange={(e) => setmessageSent(e.target.value)}
+          className="text-white w-full p-2 rounded-md border bg-slate-900 border-gray-400 focus:outline-none focus:border-blue-500"
+          value={messageSent}
+          onChange={(e) => setmessageSent(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit(e);
+            }
+          }}
         />
-        <button onClick={handleSubmit}   className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2">
-          Send
-        </button>
-      </div >
-      </footer>
-  )
-}
 
-export default SendMessage
+        <button
+          onClick={handleSubmit}
+          className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2 hover:bg-indigo-400 active:blur-sm"
+        >
+          {loading ? (
+            <div className='animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white" role="status'></div>
+          ) : (
+            <BsFillSendFill />
+          )}
+        </button>
+      </div>
+    </footer>
+  );
+};
+
+export default SendMessage;
+
+
+// import React, { useEffect, useRef, useState } from "react";
+// import { BsFillSendFill } from "react-icons/bs";
+// interface SendMessageProps {
+//   receiverId: string | undefined;
+// }
+// const SendMessage: React.FC<SendMessageProps> = ({ receiverId }) => {
+//   const [messageSent, setmessageSent] = useState("");
+//   const [status, setStatus] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   const handleSubmit = async (e: any) => {
+//     e.preventDefault();
+//       // Validation
+//       if (!messageSent) {
+//         setStatus("Vui lòng nhập đầy đủ và đúng yêu cầu!");
+//         return { status };
+//       }else{
+//         return messageSent
+//       }
+//   };
+
+//   useEffect(() => {
+//     const fetchMessage = async () => {
+//       try {
+//         if (messageSent) {
+//           setLoading(true);
+//           const response = await SendMessage(receiverId, messageSent)
+//           setLoading(false);
+//           if (response === null) {
+            
+//           } else {
+            
+//           }
+//         }
+//       } catch (error) {
+//         console.error(error);
+//         setLoading(false);
+//       }
+//     }
+//     fetchMessage();
+
+//   },[]);
+
+//   return (
+//     <footer className="bg-slate-900  border-gray-300 p-4 absolute bottom-0 w-3/4">
+//       <div className="flex items-center">
+//       {/* xử lý loading khi fetch to database */}
+//         <input
+//           type="text"
+//           placeholder={`Type a message...`}
+//           className="text-white w-full p-2 rounded-md border bg-slate-900 border-gray-400 focus:outline-none focus:border-blue-500"
+//           value={messageSent}
+//           onChange={(e) => setmessageSent(e.target.value)}
+//           onKeyDown={(e) => {
+//             if (e.key === "Enter") {
+//               handleSubmit(e);
+//             }
+//           }}
+//         />
+
+//         <button
+//           onClick={handleSubmit}
+//           className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2 hover:bg-indigo-400 active:blur-sm"
+//         >
+//           {loading ? (
+//             <div className='animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white" role="status'></div>
+//           ) : (
+//             <BsFillSendFill />
+//           )}
+//         </button>
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default SendMessage;

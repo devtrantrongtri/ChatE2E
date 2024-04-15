@@ -52,7 +52,7 @@ export default function ChatComponents ({ params }: { params: { userid: string }
       <div className="w-1/4 bg-white border-r border-gray-300">
 
         {/* Sidebar Header */}
-        <HeaderSidebar username={''}></HeaderSidebar>
+        <HeaderSidebar username={''}></HeaderSidebar> 
 
         {/*Side Bar Contact List */}
        <div  className="overflow-y-auto bg-slate-950 h-screen p-3 mb-9 pb-20">
