@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useSocketContext } from "@/context/SocketContext";
+import React, { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
 
 interface SendMessageProps {
@@ -10,6 +11,20 @@ const SendMessage: React.FC<SendMessageProps> = ({ receiverId, updateMessages })
   const [messageSent, setMessageSent] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const { socket } = useSocketContext();
+   // Listen for messageSentSignal from server
+   useEffect(() => {
+    if (socket) {
+      socket.on("updateMessageSignal", () => {
+        updateMessages(); // Update messages when messageSentSignal is received
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off("updateMessageSignal"); // Clean up event listener when component unmounts
+      }
+    };
+  }, [socket, updateMessages]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -30,6 +45,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ receiverId, updateMessages })
           body: JSON.stringify({ message: messageSent }),
         }
       );
+      socket?.emit("messageSentSignal");
       setLoading(false);
       if (response.ok) {
         setStatus("success");

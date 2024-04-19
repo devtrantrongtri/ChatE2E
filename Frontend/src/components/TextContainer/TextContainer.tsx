@@ -4,6 +4,8 @@ import { scrollToBottom } from '@/utils/scroll';
 import Messages from './Messages';
 import SendMessage from './SendMessage';
 import Tittle from '../TittleApp/Tittle';
+import { useSocketContext } from '@/context/SocketContext';
+
 
 interface TextContainerProps {
   receiverId: string | undefined,
@@ -21,6 +23,10 @@ interface Message {
 const TextContainer: React.FC<TextContainerProps> = ({ receiverId, username }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const {onlineUsers,socket} = useSocketContext();
+  const isOnline = onlineUsers.includes(receiverId)
+  // console.log(onlineUsers);
+  // console.log(isOnline);
 
   const updateMessages = async () => {
     try {
@@ -58,12 +64,12 @@ const TextContainer: React.FC<TextContainerProps> = ({ receiverId, username }) =
                 alt="User Avatar"
                 className="w-12 h-12 rounded"
               />
-              <span className="absolute bottom-0 left-8 transform translate-y-1/4 w-6 h-6 bg-green-400 blur-sm border-2 border-white dark:border-gray-800 rounded-full"></span>
+              <span className={ `absolute bottom-0 left-8 transform translate-y-1/4 w-6 h-6 ${isOnline ? 'bg-green-400' : 'bg-gray-500'}  blur-sm border-2 border-white dark:border-gray-800 rounded-full`}></span>
             </div>
           </div>
           <div className="flex-1  ">
             <h2 className="text-lg   font-semibold">{username}</h2>
-            <h5>online</h5>
+            <h5>{isOnline ? <>online</> : <> offline</>}</h5>
           </div>
         </div>
       </header>

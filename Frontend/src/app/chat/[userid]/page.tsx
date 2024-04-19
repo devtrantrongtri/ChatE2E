@@ -13,6 +13,8 @@ import { getAllUsers } from '@/utils/getUser';
 import { useRouter } from 'next/navigation';
 import HeaderSidebar from "@/components/SideBar/HeaderSidebar";
 import TextContainer from "@/components/TextContainer/TextContainer";
+import { SocketContextProvider } from "@/context/SocketContext";
+import { AuthContextProvider } from "@/context/AuthenContext";
 
 interface User {
   _id: string;
@@ -46,8 +48,9 @@ export default function ChatComponents ({ params }: { params: { userid: string }
   },[users]);
 
   return (
+    
     <div className="flex h-screen overflow-hidden">
-        
+      
       {/* Sidebar */}
       <div className="w-1/4 bg-white border-r border-gray-300">
 
@@ -73,7 +76,11 @@ export default function ChatComponents ({ params }: { params: { userid: string }
       </div>
       
       {/* Main Chat Area */}
+      <AuthContextProvider>
+      <SocketContextProvider>
         <TextContainer  username={username} receiverId = {friendId}></TextContainer>
+      </SocketContextProvider>
+      </AuthContextProvider>
     </div>
   );
 }

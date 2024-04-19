@@ -65,6 +65,24 @@ export class UsersController {
     req.session.destroy();
     return { msg: 'The user session has ended' }
   }
+
+  // xac thuc user
+  @ApiTags('auth')
+  @UseGuards(AuthenticatedGuard)
+  @Get('/authen')
+  authenticate(@Request() req): any {
+    try {
+      return { 
+        user : req.user,
+        msg: 'User logged in' 
+      };
+    } catch (error) {
+      return {
+        error: error,
+        msg:"something went wrong"
+      }
+    }
+  }
   @ApiTags('user')
   @UseGuards(AuthenticatedGuard)
   @Get()

@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MessagesModule } from './messages/messages.module';
 import { ConversationModule } from './conversation/conversation.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { ConversationModule } from './conversation/conversation.module';
     }),
     MessagesModule,
     ConversationModule,
-   
+    GatewayModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -30,7 +30,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
    // Cấu hình CORS
   app.enableCors({
-  origin: 'http://localhost:3000', // Thay đổi địa chỉ nguồn phù hợp
+    origin: 'http://localhost:3000', // Allow requests from this origin
+    methods: ['GET', 'POST'], // Allow only these methods
   credentials: true,
   });
   await app.listen(configService.get('PORT'));
