@@ -17,7 +17,6 @@ interface Message {
 
 const Messages: React.FC<MessagesProps> = ({ receiverId, username, messages, updateMessages }) => {
   useEffect(() => {
-   // scrollToBottom(); // Example: You need to implement this function
   }, [messages]);
 
   return (

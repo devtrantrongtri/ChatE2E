@@ -13,3 +13,30 @@ export class SessionSerializer extends PassportSerializer {
     done(null, payload)
   }
 }
+
+/*
+serializeUser(user: any, done: (err: Error, user: any) => void): any {
+    // Lưu trữ thông tin người dùng vào phiên
+    const serializedUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role // Ví dụ: admin, user
+    };
+    done(null, serializedUser);
+}
+
+deserializeUser(payload: any, done: (err: Error, payload: string) => void): any {
+    // Trích xuất thông tin người dùng từ phiên
+    const user = {
+        id: payload.id,
+        username: payload.username,
+        email: payload.email,
+        role: payload.role
+    };
+    done(null, user);
+}
+
+
+
+*/

@@ -3,61 +3,62 @@ import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from
 import { Server } from "socket.io";
 
 @WebSocketGateway({
-    cors: {
-      origin: 'http://localhost:3000',
-      methods: ['GET', 'POST'],
-      allowedHeaders: ['my-custom-header'],
-      credentials: true,
-    },
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
+  },
 })
-
-
 export class MyGateWay implements OnModuleInit {
-    @WebSocketServer()
-    server: Server;
-    userSocketMap: { [userId: string]: string } = {};
+  @WebSocketServer()
+  server: Server;
+  // Map để lưu trữ ID của người dùng và ID của socket tương ứng
+  userSocketMap: { [userId: string]: string } = {};
 
-    constructor() {
-        this.getReceiverSocketId = this.getReceiverSocketId.bind(this);
-    }
+  constructor() {
+    // Ràng buộc ngữ cảnh của phương thức getReceiverSocketId
+    this.getReceiverSocketId = this.getReceiverSocketId.bind(this);
+  }
+// Phương thức để lấy ID của socket của người dùng nhận
+  private getReceiverSocketId(receiverId: string): string | undefined {
+    return this.userSocketMap[receiverId];
+  }
+ // Phương thức được thực thi sau khi module đã được khởi tạo
+  onModuleInit() {
+    this.server.on('connection', (socket) => {
 
-    private getReceiverSocketId(receiverId: string): string | undefined {
-        return this.userSocketMap[receiverId];
-    }
-
-    onModuleInit() {
-        this.server.on('connection', (socket) => {
-            console.log(socket.id);
-            console.log("connectedsss");
-
-            let userId: string | undefined = Array.isArray(socket.handshake.query.userId) ? socket.handshake.query.userId[0] : socket.handshake.query.userId as string;
-            if (userId) {
-                this.userSocketMap[userId] = socket.id;
-                this.server.emit("getOnlineUser", Object.keys(this.userSocketMap));
-                // console.log("1",this.userSocketMap);
-                // console.log("2",Object.keys(this.userSocketMap))
-            }
-            
-            socket.on('disconnect', () => {
-                console.log(socket.id);
-                console.log("disconnect");
-
-                // Remove the user from the map
-                Object.keys(this.userSocketMap).forEach((key) => {
-                    if (this.userSocketMap[key] === socket.id) {
-                        delete this.userSocketMap[key];
-                    }
-                });
-
-                this.server.emit("getOnlineUser", Object.keys(this.userSocketMap));
-            });
-
-            socket.on('messageSentSignal', () => {
-
-                socket.broadcast.emit('updateMessageSignal');
-            });
+        // Lấy ID của người dùng từ handshake query
+      let userId: string | undefined = Array.isArray(
+        socket.handshake.query.userId,
+      )
+        ? socket.handshake.query.userId[0]
+        : (socket.handshake.query.userId as string);
+         // Nếu có ID của người dùng, ánh xạ nó với ID của socket
+      if (userId) {
+        this.userSocketMap[userId] = socket.id;
+        this.server.emit('getOnlineUser', Object.keys(this.userSocketMap));
+      }
+      console.log(userId, "socketId:",socket.id)
+      socket.on('disconnect', () => {
+        // Remove the user from the map
+        console.log(userId,"disconnectd")
+        Object.keys(this.userSocketMap).forEach((key) => {
+          if (this.userSocketMap[key] === socket.id) {
+            delete this.userSocketMap[key];
+          }
         });
-    }
+        // Phát ra một sự kiện để thông báo cho các client về người dùng đang trực tuyến
+        this.server.emit('getOnlineUser', Object.keys(this.userSocketMap));
+      });
+        // Bắt sự kiện khi có tín hiệu tin nhắn được gửi
+      socket.on('messageSentSignal', () => {
+        
+        socket.broadcast.emit('updateMessageSignal');
+      });
+    });
+  }
+}
 
 
     
@@ -73,7 +74,6 @@ export class MyGateWay implements OnModuleInit {
     //         msg: 'newMessage',
     //     });
     // }
-}
 
 
 

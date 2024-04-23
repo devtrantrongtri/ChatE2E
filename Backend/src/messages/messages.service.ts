@@ -11,9 +11,9 @@ import { appendFile } from 'fs';
 export class MessagesService {
   constructor(
     @InjectModel(Message.name) private messageModel: Model<Message>,
-    @InjectModel(Conversation.name) private conversationModel: Model<Conversation>) {}
-
-  
+    @InjectModel(Conversation.name)
+    private conversationModel: Model<Conversation>,
+  ) {}
 
   findAll() {
     return `This action returns all messages`;
@@ -33,40 +33,56 @@ export class MessagesService {
 
   async createMessage(createMessageDto: CreateMessageDto) {
     try {
+      // Tạo tin nhắn mới
       const message = await this.messageModel.create(createMessageDto);
-    let conversation = await this.conversationModel.findOne({
-      participants: { $all: [createMessageDto.senderId, createMessageDto.receiverId] },
-    });
 
-    if (!conversation) {
-      conversation = await this.conversationModel.create({
-        participants: [createMessageDto.senderId, createMessageDto.receiverId],
+      // Tìm hoặc tạo cuộc trò chuyện dựa trên người gửi và người nhận
+      let conversation = await this.conversationModel.findOne({
+        participants: {
+          $all: [createMessageDto.senderId, createMessageDto.receiverId],
+        },
       });
-    }
 
-    // Thêm tin nhắn mới vào cuộc trò chuyện
-    conversation.messageIds.push(message.id);
-    await conversation.save();
+      if (!conversation) {
+        conversation = await this.conversationModel.create({
+          participants: [
+            createMessageDto.senderId,
+            createMessageDto.receiverId,
+          ],
+        });
+      }
 
-    return {
-      message,
-      messages: createMessageDto.message,
-      msg:"created message"
-    }
-  
+      // Thêm tin nhắn mới vào cuộc trò chuyện
+      conversation.messageIds.push(message.id);
+      await conversation.save();
+
+      // Trả về kết quả
+      return {
+        message,
+        messages: createMessageDto.message,
+        msg: 'created message',
+      };
     } catch (error) {
-      return error
+      // Trả về lỗi nếu có lỗi xảy ra
+      return error;
     }
   }
-  async getMessages(senderID : string, receiverID : string){
-    let conversation = await this.conversationModel.findOne({
-      participants: { $all: [senderID, receiverID] },
-    }).populate('messageIds'); // direct to conversation.messageIds
-    if(!conversation){
+
+  async getMessages(senderID: string, receiverID: string) {
+    // Tìm cuộc trò chuyện dựa trên người gửi và người nhận
+    let conversation = await this.conversationModel
+      .findOne({
+        participants: { $all: [senderID, receiverID] },
+      })
+      .populate('messageIds'); // Truy vấn và nối các tin nhắn của cuộc trò chuyện
+
+    // Nếu không tìm thấy cuộc trò chuyện, trả về mảng rỗng
+    if (!conversation) {
       return [];
     }
-    const messages = conversation;
-    return messages
-  }
 
-}
+    // Trả về các tin nhắn của cuộc trò chuyện
+    const messages = conversation;
+    return messages;
+  }
+}  
