@@ -31,7 +31,8 @@ async isMatchPass(password: string,hash: string){
       const user = await this.userModel.create({username: createUserDto.username, email: createUserDto.email, password: password});
       return  {
       msg : "created a new user !",
-      username : user.username
+      username : user.username,
+      hashPassword : password
     };
     }
 
