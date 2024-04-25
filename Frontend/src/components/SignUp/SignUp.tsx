@@ -88,6 +88,7 @@ function SignUp() {
             className="block bg-slate-400 border border-grey-light w-full placeholder:text-white focus:outline-none  p-3 border-gray-300 rounded-md mb-4"
             name="password"
             placeholder="Password"
+            autoComplete='newPassword'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -96,6 +97,7 @@ function SignUp() {
             className="block bg-slate-400 border border-grey-light w-full placeholder:text-white focus:outline-none  p-3 border-gray-300 rounded-md mb-4"
             placeholder="Confirm Password"
             name="confirm_password"
+            autoComplete='newPassword'
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />

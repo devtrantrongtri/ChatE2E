@@ -50,15 +50,35 @@ function getLast16BytesFromHash(hashPassword: any): Buffer {
     return last16Bytes;
 }
 
-// Hàm lưu encryptedHex vào IndexedDB dựa trên userName
 function saveEncryptedHexToIndexedDB(userName: string, encryptedHex: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         // Mở kết nối với IndexedDB
         const request = indexedDB.open('myDatabase', 1);
         
         // Xử lý sự kiện mở kết nối
+        request.onerror = () => {
+            reject(new Error('Failed to open connection to IndexedDB'));
+        };
+
+        // Xử lý sự kiện nâng cấp cơ sở dữ liệu (nếu cần)
+        request.onupgradeneeded = (event) => {
+            const db = (event.target as IDBOpenDBRequest).result;
+            if (!db.objectStoreNames.contains('encryptedHexStore')) {
+                db.createObjectStore('encryptedHexStore');
+            }
+        };
+
+        // Xử lý sự kiện thành công khi mở kết nối
         request.onsuccess = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;
+            
+            // Kiểm tra xem  dữ liệu đã được tạo thành công chưa
+            if (!db.objectStoreNames.contains('encryptedHexStore')) {
+                reject(new Error('Object store encryptedHexStore not found'));
+                return;
+            }
+            
+            // Tiến hành thực hiện giao dịch
             const transaction = db.transaction('encryptedHexStore', 'readwrite');
             const store = transaction.objectStore('encryptedHexStore');
             
@@ -71,13 +91,9 @@ function saveEncryptedHexToIndexedDB(userName: string, encryptedHex: string): Pr
                 reject(new Error('Failed to add encryptedHex to IndexedDB'));
             };
         };
-
-        // Xử lý sự kiện lỗi khi mở kết nối
-        request.onerror = () => {
-            reject(new Error('Failed to open connection to IndexedDB'));
-        };
     });
 }
+
 
 // Hàm lấy encryptedHex từ IndexedDB dựa trên userName
 export function getEncryptedHexFromIndexedDB(userName: string): Promise<string> {
