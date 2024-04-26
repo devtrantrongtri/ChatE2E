@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,6 +16,7 @@
     "react-dom": "^18",
     "react-icons": "^5.0.1",
     "react-toastify": "^10.0.5",
+    "secp256k1": "^5.0.0",
     "secp256r1": "^0.0.3",
     "socket.io-client": "^4.7.5"
   },

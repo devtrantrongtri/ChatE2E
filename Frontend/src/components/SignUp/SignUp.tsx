@@ -1,5 +1,5 @@
 'use client'
-import generateKeyKeyAndSaveToIndexDb, { getPublicKeyHex } from '@/E2E/generateKey';
+import generateKeyKeyAndSaveToIndexDb, { getPublicKeyHex, } from '@/E2E/generateKey';
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
@@ -46,8 +46,8 @@ function SignUp() {
       // Chuyển hướng đến trang đăng nhập khi đăng ký thành công
       const data = await response.json();
       generateKeyKeyAndSaveToIndexDb(data.hashPassword,data.username);
-      // const publicKey =  await getPublicKeyHex(data.username,data.hashPassword);
-      // console.log("PublicKey from signup:",publicKey);
+      const pubKey =await getPublicKeyHex(data.username,data.hashPassword);
+      console.log("PublicKey test:",pubKey);
       router.push("/login");
     } else {
       // Handle login error
@@ -57,6 +57,9 @@ function SignUp() {
 
   return (
     <div className="bg-slate-900 h-screen flex flex-col ">
+    {/* <button className='bg-red-600 text-white' onClick={() => generateSharedKey()}>onclick</button>
+    <button className='bg-white text-black' onClick={() => testExample()}>onclick</button> */}
+
       <div className="container w-full lg:w-1/2 max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2 ">
         <form
           onSubmit={handleSubmit}
