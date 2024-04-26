@@ -25,10 +25,10 @@ export default function  generateKeyKeyAndSaveToIndexDb (hashPassword:string,use
     // Lưu vào indexDb.
     saveEncryptedHexToIndexedDB(userName,encryptedHex)
 
-    const encrypted = async () =>  await getEncryptedHexFromIndexedDB(userName);
-    encrypted().then(res => {
-        console.log('Private Key Hash :',res);
-    })
+    // const encrypted = async () =>  await getEncryptedHexFromIndexedDB(userName);
+    // encrypted().then(res => {
+    //     console.log('Private Key Hash :',res);
+    // })
     
 }
 
@@ -127,4 +127,16 @@ export function getEncryptedHexFromIndexedDB(userName: string): Promise<string> 
             reject(new Error('Failed to open connection to IndexedDB'));
         };
     });
+}
+
+
+export async function getPublicKeyHex(userName: string, hashPassword: string) {
+    const encryptedKeyHex = await getEncryptedHexFromIndexedDB(userName);
+    const encryptedBytes = aesjs.utils.hex.toBytes(encryptedKeyHex);   
+    const last16Bytes = getLast16BytesFromHash(hashPassword);
+    const key = Array.from(last16Bytes);
+    const aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(1));
+    var decryptedKeyBytes = aesCtr.decrypt(encryptedBytes);
+    // console.log("getPublicKeyByte:","encryptedKeyHex:",encryptedKeyHex ,"publicKeyBytes:" , decryptedKeyBytes)
+    return decryptedKeyBytes
 }

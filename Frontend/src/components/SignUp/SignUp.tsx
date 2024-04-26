@@ -1,5 +1,5 @@
 'use client'
-import generateKeyKeyAndSaveToIndexDb from '@/E2E/generateKey';
+import generateKeyKeyAndSaveToIndexDb, { getPublicKeyHex } from '@/E2E/generateKey';
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
@@ -46,7 +46,8 @@ function SignUp() {
       // Chuyển hướng đến trang đăng nhập khi đăng ký thành công
       const data = await response.json();
       generateKeyKeyAndSaveToIndexDb(data.hashPassword,data.username);
-      
+      // const publicKey =  await getPublicKeyHex(data.username,data.hashPassword);
+      // console.log("PublicKey from signup:",publicKey);
       router.push("/login");
     } else {
       // Handle login error
