@@ -10,13 +10,10 @@ import { ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  
-
-
-  // @Get(':id')
-  // findDetail(@Param('id') id: string) {
-  //   return this.usersService.findOne(id);
-  // }
+  @Get('/getInForUser/:id')
+  findDetail(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

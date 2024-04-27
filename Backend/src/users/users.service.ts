@@ -63,7 +63,9 @@ async isMatchPass(password: string,hash: string){
   // // have to convert string to objectid to using findById()
   async findOne(id: string) {
     const objectId = new mongoose.Types.ObjectId(id); 
-    return this.userModel.findById(objectId).exec();
+    const user = await this.userModel.findById(objectId).exec();
+    const {password,...rest} = user.toObject();
+    return rest;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
