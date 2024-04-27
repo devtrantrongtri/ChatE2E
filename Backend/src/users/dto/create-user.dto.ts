@@ -14,4 +14,6 @@ export class CreateUserDto {
     @MinLength(2, {message: "Username must be at least 2 characters"})
     @MaxLength(120, {message: "Username must not be greater than 120 characters"})
     username : string;
+
+    pubKey : Buffer;
 }

@@ -28,11 +28,12 @@ async isMatchPass(password: string,hash: string){
       }
     }else{
       const password = await this.hashPass(createUserDto.password);
-      const user = await this.userModel.create({username: createUserDto.username, email: createUserDto.email, password: password});
+      const user = await this.userModel.create({username: createUserDto.username, email: createUserDto.email, password: password,pubKey: null});
       return  {
       msg : "created a new user !",
       username : user.username,
-      hashPassword : password
+      hashPassword : password,
+      userid : user.id
     };
     }
 
@@ -65,10 +66,10 @@ async isMatchPass(password: string,hash: string){
     return this.userModel.findById(objectId).exec();
   }
 
-  // async update(id: string, updateUserDto: UpdateUserDto) {
-  //   const objectId = new mongoose.Types.ObjectId(id); 
-  //   return this.userModel.findByIdAndUpdate(objectId, updateUserDto, { new: true }).exec();
-  // }
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const objectId = new mongoose.Types.ObjectId(id); 
+    return this.userModel.findByIdAndUpdate(objectId, updateUserDto, { new: true }).exec();
+  }
 
   // async remove(id: string) {
   //   const objectId = new mongoose.Types.ObjectId(id); 

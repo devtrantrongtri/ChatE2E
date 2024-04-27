@@ -3,7 +3,7 @@ import generateKeyKeyAndSaveToIndexDb, { getPublicKeyHex, } from '@/E2E/generate
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
   
 function SignUp() {
@@ -13,8 +13,14 @@ function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [pubKeyState, setPubKeyState] = useState<any>();
   // Hook để sử dụng chức năng định tuyến
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("set:", pubKeyState);
+  }, [pubKeyState]);
+
   // Hàm xử lý khi người dùng nhấn nút đăng ký
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -46,15 +52,37 @@ function SignUp() {
       // Chuyển hướng đến trang đăng nhập khi đăng ký thành công
       const data = await response.json();
       generateKeyKeyAndSaveToIndexDb(data.hashPassword,data.username);
-      const pubKey =await getPublicKeyHex(data.username,data.hashPassword);
-      console.log("PublicKey test:",pubKey);
-      router.push("/login");
+      const pubKeyUnit8Array =await getPublicKeyHex(data.username,data.hashPassword); 
+      console.log("pubunit8",pubKeyUnit8Array)
+      const BufferPublicKey = Array.from(pubKeyUnit8Array)
+      console.log("BufferPublicKey",BufferPublicKey)
+        // Cập nhật publicKey và gửi yêu cầu PATCH
+        setPubKeyState(BufferPublicKey);
+        console.log("set:", BufferPublicKey);
+        await sendPublicKeyToServer(data.userid);
     } else {
       // Handle login error
       setError("Đăng Ký không thành công. Vui lòng kiểm tra lại thông tin.");
     }
   };
-
+  const sendPublicKeyToServer = async (userId: string) => {
+    const resSendPublicKey = await fetch(`http://localhost:4041/users/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ pubKey: pubKeyState }),
+    });
+  
+    if (resSendPublicKey.ok) {
+      const responseData = await resSendPublicKey.json();
+      console.log("Response data:", responseData);
+      // router.push("/login");
+    } else {
+      setError("Có lỗi gì đó ở server. Vui lòng báo cho admin.");
+    }
+  };
   return (
     <div className="bg-slate-900 h-screen flex flex-col ">
     {/* <button className='bg-red-600 text-white' onClick={() => generateSharedKey()}>onclick</button>

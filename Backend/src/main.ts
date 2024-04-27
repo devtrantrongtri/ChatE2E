@@ -31,7 +31,7 @@ async function bootstrap() {
    // Cấu hình CORS
   app.enableCors({
     origin: 'http://localhost:8000', // Allow requests from this origin
-    methods: ['GET', 'POST'], // Allow only these methods
+    methods: ['GET', 'POST','PATCH'], // Allow only these methods
   credentials: true,
   });
   await app.listen(configService.get('PORT'));

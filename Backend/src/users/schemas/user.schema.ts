@@ -9,6 +9,9 @@ export class User {
   @Prop({required: true, unique: true})
   username: string;
 
+  @Prop({ type: Buffer }) // Sử dụng kiểu dữ liệu Buffer cho trường pubKey
+  pubKey: Buffer;
+
   @Prop()
   email: string;
 
