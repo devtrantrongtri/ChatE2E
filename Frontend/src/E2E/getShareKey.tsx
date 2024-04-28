@@ -3,7 +3,7 @@ import { deriveSharedSecret, getPrivateKeyHex } from "./generateKey";
 const secp256k1 = require('secp256k1')
 var aesjs = require('aes-js');
 
-export  const getSharedKey = async (orderId:any) => {
+export  const getSharedKey  = async (orderId:any)  =>{
     console.log("orderId: ", orderId);
     try {
         const response = await fetch(`http://localhost:4041/users/authen`,{credentials: 'include'});
@@ -20,6 +20,7 @@ export  const getSharedKey = async (orderId:any) => {
             const response2 = await fetch(`http://localhost:4041/users/getInForUser/${orderId}`,{credentials: 'include'});
             if (!response2.ok) {
                 throw new Error('Failed to fetch users authentication');
+                return null;
             }else{
                 const ortherUser = await response2.json();
                 const ortherPublic = Buffer.from(ortherUser.pubKey, 'base64');//Uint8Array.from(ortherUser.pubKey);

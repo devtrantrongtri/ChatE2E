@@ -1,4 +1,5 @@
 import { useSocketContext } from "@/context/SocketContext";
+import { getEncryptedMessage } from "@/E2E/encryptMessage";
 import { getSharedKey } from "@/E2E/getShareKey";
 import React, { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
@@ -35,7 +36,10 @@ const SendMessage: React.FC<SendMessageProps> = ({ receiverId, updateMessages })
         return { status };
       }
       setLoading(true);
-      const sharedKey = getSharedKey(receiverId);
+
+      // Encrypt Message
+      const sharedKey = await getSharedKey(receiverId);
+      const encryptedMessage =  getEncryptedMessage(sharedKey,messageSent)
       console.log("sharedKey:",sharedKey);
       const response = await fetch(
         `http://localhost:4041/messages/${receiverId}`,
@@ -45,7 +49,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ receiverId, updateMessages })
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ message: messageSent }),
+          body: JSON.stringify({ message: encryptedMessage }),
         }
       );
       socket?.emit("messageSentSignal");
