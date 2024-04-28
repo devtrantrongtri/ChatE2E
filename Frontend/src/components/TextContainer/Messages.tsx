@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import { getDecryptedMessage } from "@/E2E/decryptMessage";
+import { getSharedKey } from "@/E2E/getShareKey";
+import React, { useEffect, useState } from "react";
 
 interface MessagesProps {
   receiverId: string | undefined;
@@ -15,34 +17,54 @@ interface Message {
   createAt: Date;
 }
 
+const getKey = async (receiver:string):Promise<Uint8Array> => {
+  return await getSharedKey(receiver);
+}
+
 const Messages: React.FC<MessagesProps> = ({ receiverId, username, messages, updateMessages }) => {
+  const [sharedKey, setSharedKey] = useState<Uint8Array|null>(null);
+
   useEffect(() => {
-  }, [messages]);
+     const fetchKey = async () => {
+       if (receiverId) {
+         const key = await getKey(receiverId);
+         setSharedKey(key);
+       } else {
+        setSharedKey(null);
+       }
+     };
+ 
+     fetchKey();
+  }, [receiverId, messages]); // Thêm receiverId vào dependency array để đảm bảo rằng hàm sẽ được gọi lại khi receiverId thay đổi
+ 
 
   return (
     <div className="h-screen bg-slate-900 overflow-y-auto p-10 pb-60">
-      {messages && messages.map((message) => (
-        <div
-          className={`flex mb-4 cursor-pointer ${
-            message.senderId === receiverId ? "" : "justify-end"
-          }`}
-          key={message._id}
-        >
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center mr-2 ${message.senderId === receiverId ? "" : "ml-2"}`}>
-            {/* <img
-              src={message.senderId === receiverId ? "https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" : "https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"}
-              alt="User Avatar"
-              className="w-8 h-8 rounded-full"
-            /> */}
+      {messages && messages.map((message)  => {
+         const decryptedMessage = sharedKey ? getDecryptedMessage(sharedKey, message.message) : "Decryption key not available";
+        return (
+          <div
+            className={`flex mb-4 cursor-pointer ${
+              message.senderId === receiverId ? "" : "justify-end"
+            }`}
+            key={message._id}
+          >
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center mr-2 ${message.senderId === receiverId ? "" : "ml-2"}`}>
+              {/* <img
+                src={message.senderId === receiverId ? "https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" : "https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"}
+                alt="User Avatar"
+                className="w-8 h-8 rounded-full"
+              /> */}
+            </div>
+            <div className={`flex max-w-96 rounded-lg p-3 gap-3 ${message.senderId === receiverId ? "bg-white text-gray-700" : "bg-indigo-500 text-white"}`}>
+              <p>{decryptedMessage}</p>
+            </div>
           </div>
-          <div className={`flex max-w-96 rounded-lg p-3 gap-3 ${message.senderId === receiverId ? "bg-white text-gray-700" : "bg-indigo-500 text-white"}`}>
-            <p>{message.message}</p>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
-};
+} 
 
 export default Messages;
 
