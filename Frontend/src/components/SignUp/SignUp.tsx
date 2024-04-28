@@ -14,13 +14,12 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [pubKeyState, setPubKeyState] = useState<any>();
+  const [userid, setUserid] = useState<any>();
+
   // Hook để sử dụng chức năng định tuyến
   const router = useRouter();
 
-  useEffect(() => {
-    console.log("set:", pubKeyState);
-  }, [pubKeyState]);
-
+  
   // Hàm xử lý khi người dùng nhấn nút đăng ký
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -51,6 +50,7 @@ function SignUp() {
     if (response.ok) {
       // Chuyển hướng đến trang đăng nhập khi đăng ký thành công
       const data = await response.json();
+      setUserid(data.userid);
       generateKeyKeyAndSaveToIndexDb(data.hashPassword,data.username);
       const pubKeyUnit8Array =await getPublicKeyHex(data.username,data.hashPassword); 
       console.log("pubunit8",pubKeyUnit8Array)
@@ -59,7 +59,7 @@ function SignUp() {
         // Cập nhật publicKey và gửi yêu cầu PATCH
         setPubKeyState(BufferPublicKey);
         console.log("set:", BufferPublicKey);
-        await sendPublicKeyToServer(data.userid);
+        // await sendPublicKeyToServer(data.userid);
     } else {
       // Handle login error
       setError("Đăng Ký không thành công. Vui lòng kiểm tra lại thông tin.");
@@ -78,11 +78,18 @@ function SignUp() {
     if (resSendPublicKey.ok) {
       const responseData = await resSendPublicKey.json();
       console.log("Response data:", responseData);
-      // router.push("/login");
+      router.push("/login");
     } else {
       setError("Có lỗi gì đó ở server. Vui lòng báo cho admin.");
     }
   };
+  useEffect(() => {
+    if (pubKeyState && userid) {
+      console.log("set:", pubKeyState);
+      sendPublicKeyToServer(userid);
+    }
+  }, [pubKeyState, userid]);
+
   return (
     <div className="bg-slate-900 h-screen flex flex-col ">
     {/* <button className='bg-red-600 text-white' onClick={() => generateSharedKey()}>onclick</button>

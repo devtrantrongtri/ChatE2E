@@ -10,6 +10,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(AuthenticatedGuard)
   @Get('/getInForUser/:id')
   findDetail(@Param('id') id: string) {
     return this.usersService.findOne(id);
@@ -39,7 +40,10 @@ export class UsersController {
   login(@Request() req): any {
     try {
       return { 
-        user : req.user,
+        user : {
+          userId : req.user.userId,
+          username : req.user.username,
+        },
         msg: 'User logged in' 
       };
     } catch (error) {
@@ -71,7 +75,8 @@ export class UsersController {
     try {
       return { 
         user : req.user,
-        msg: 'User logged in' 
+        msg: 'User logged in' ,
+        hashPassword: req.user.password
       };
     } catch (error) {
       return {

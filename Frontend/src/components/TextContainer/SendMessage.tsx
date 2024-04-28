@@ -1,4 +1,5 @@
 import { useSocketContext } from "@/context/SocketContext";
+import { getSharedKey } from "@/E2E/getShareKey";
 import React, { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
 
@@ -34,6 +35,8 @@ const SendMessage: React.FC<SendMessageProps> = ({ receiverId, updateMessages })
         return { status };
       }
       setLoading(true);
+      const sharedKey = getSharedKey(receiverId);
+      console.log("sharedKey:",sharedKey);
       const response = await fetch(
         `http://localhost:4041/messages/${receiverId}`,
         {

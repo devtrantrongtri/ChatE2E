@@ -15,7 +15,9 @@ export class AuthService {
             if(isMatch){
                 return {
                     userId: user.id,
-                    userName: user.username // nen return only username and id
+                    userName: user.username,
+                    hashPassword: user.password
+                    // nen return only username and id and hash password
                   };
             }else{
                 return null;

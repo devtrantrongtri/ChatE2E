@@ -144,6 +144,16 @@ export async function getPublicKeyHex(userName: string, hashPassword: string) {
     const pubKey = secp256k1.publicKeyCreate(Buffer.from(decryptedKeyBytes));
     return pubKey
 }
+export async function getPrivateKeyHex(userName: string, hashPassword: string): Promise<Uint8Array> {
+    const encryptedKeyHex = await getEncryptedHexFromIndexedDB(userName);
+    const encryptedBytes = aesjs.utils.hex.toBytes(encryptedKeyHex);   
+    const last16Bytes = getLast16BytesFromHash(hashPassword);
+    const key = Array.from(last16Bytes);
+    const aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(1));
+    const priKeyByte = aesCtr.decrypt(encryptedBytes);
+    console.log("Private key test:",priKeyByte);
+    return priKeyByte
+}
 
 // Hàm tạo khóa chung từ public key B và private key A
 // own and order phải là Uint8Array
