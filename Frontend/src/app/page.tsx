@@ -1,14 +1,26 @@
 // import Image from "next/image";
+'use client'
 import { SiNestjs, SiNextdotjs } from "react-icons/si";
 import Tittle from "@/components/TittleApp/Tittle";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { BiLogoMongodb } from "react-icons/bi";
 import { MdEnhancedEncryption } from "react-icons/md";
 import { TbBrandSocketIo } from "react-icons/tb";
 
 export default function HomePage() {
-  
+  useEffect(() => {
+    // Đăng ký Service Worker chỉ khi component được mount, đảm bảo chỉ thực thi trên client
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/scripts/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  }, []);
   return (
     <div className="bg-slate-900 h-screen text-3xl pt-11">
       <nav className="pr-5">

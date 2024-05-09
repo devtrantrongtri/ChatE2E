@@ -21,6 +21,7 @@ export default function ChatComponents({
 }: {
   params: { userid: string };
 }) {
+  const [user, setUser] = useState<User>();
   const [users, setUsers] = useState<User[]>([]);
   const [friendId, setFriend] = useState<string>();
   const [username, setUsername] = useState<string>("Xin chào !");
@@ -43,12 +44,13 @@ export default function ChatComponents({
     fetchUsers();
   }, [users]);
 
+  // console.log('users:',users);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div className="w-1/4 bg-white border-r border-gray-300">
         {/* Sidebar Header */}
-        <HeaderSidebar username={""}></HeaderSidebar>
+        <HeaderSidebar username={""} userid={params.userid}></HeaderSidebar>
 
         {/*Side Bar Contact List */}
         <div className="overflow-y-auto bg-slate-950 h-screen p-3 mb-9 pb-20">

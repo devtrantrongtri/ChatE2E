@@ -56,7 +56,7 @@ const Messages: React.FC<MessagesProps> = ({ receiverId, username, messages, upd
                 className="w-8 h-8 rounded-full"
               /> */}
             </div>
-            <div className={`flex max-w-96 rounded-lg p-3 gap-3 ${message.senderId === receiverId ? "bg-white text-gray-700" : "bg-indigo-500 text-white"}`}>
+            <div className={`flex max-w-96 rounded-lg p-3 gap-3 break-all ${message.senderId === receiverId ? "bg-white text-gray-700" : "bg-indigo-500 text-white"}`}>
               <p>{decryptedMessage}</p>
             </div>
           </div>

@@ -52,16 +52,15 @@ function getLast16BytesFromHash(hashPassword: any): Buffer {
     return last16Bytes;
 }
 
+
 function saveEncryptedHexToIndexedDB(userName: string, encryptedHex: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         // Mở kết nối với IndexedDB
         const request = indexedDB.open('myDatabase', 1);
-        
         // Xử lý sự kiện mở kết nối
         request.onerror = () => {
             reject(new Error('Failed to open connection to IndexedDB'));
         };
-
         // Xử lý sự kiện nâng cấp cơ sở dữ liệu (nếu cần)
         request.onupgradeneeded = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;
@@ -69,7 +68,6 @@ function saveEncryptedHexToIndexedDB(userName: string, encryptedHex: string): Pr
                 db.createObjectStore('encryptedHexStore');
             }
         };
-
         // Xử lý sự kiện thành công khi mở kết nối
         request.onsuccess = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;
