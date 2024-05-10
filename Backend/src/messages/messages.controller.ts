@@ -42,6 +42,5 @@ export class MessagesController {
       @Body() createMessageDto : CreateMessageDto,
     ){
     return this.messagesService.createMessageInGroup(createMessageDto);
-
     }
 }

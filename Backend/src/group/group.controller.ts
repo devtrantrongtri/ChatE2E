@@ -2,19 +2,29 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('group')
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
+  // Tạo group mới
+  @ApiTags('Group')
   @Post()
   create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupService.create(createGroupDto);
+    try {
+      return this.groupService.createGroup(createGroupDto);
+    } catch (error) {
+      console.log(error);
+      return error.message;
+    }
   }
 
+  // hiển thị tất cả group
+  @ApiTags('Group')
   @Get()
   findAll() {
-    return this.groupService.findAll();
+    return this.groupService.findAllGroup();
   }
 
   @Get(':id')

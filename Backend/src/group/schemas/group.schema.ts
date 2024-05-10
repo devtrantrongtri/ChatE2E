@@ -6,7 +6,7 @@ export type GroupDocument = HydratedDocument<Group>
 
 @Schema()
 export class Group {
-    @Prop({required: true})
+    @Prop({required: true,unique: true})
     groupName: string;
 
     @Prop({
