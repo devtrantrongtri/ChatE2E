@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { MessagesModule } from './messages/messages.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { GatewayModule } from './gateway/gateway.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { GatewayModule } from './gateway/gateway.module';
     }),
     MessagesModule,
     ConversationModule,
-    GatewayModule
+    GatewayModule,
+    GroupModule
   ],
   controllers: [AppController],
   providers: [AppService],

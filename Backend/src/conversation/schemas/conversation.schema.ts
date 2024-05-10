@@ -12,7 +12,8 @@ export class Conversation {
   @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }], default: [] })
   messageIds;
  
-
+  @Prop({type:Boolean, default: false})
+  isGroup;
   @Prop({default: Date.now})
   createdAt : Date;
   

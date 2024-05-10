@@ -34,4 +34,14 @@ export class MessagesController {
        const senderID = req.user.userId; 
        return this.messagesService.getMessages(senderID, receiverID);
     }
+  
+    @ApiTags('messages')
+    @UseGuards(AuthenticatedGuard)
+    @Post('/group/:id')
+    createMessageInGroup(
+      @Body() createMessageDto : CreateMessageDto,
+    ){
+    return this.messagesService.createMessageInGroup(createMessageDto);
+
+    }
 }

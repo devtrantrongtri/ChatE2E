@@ -6,6 +6,7 @@ import { Message } from './schemas/message.schemas';
 import { Model } from 'mongoose';
 import { Conversation } from 'src/conversation/schemas/conversation.schema';
 import { appendFile } from 'fs';
+import { Group } from 'src/group/schemas/group.schema';
 
 @Injectable()
 export class MessagesService {
@@ -13,6 +14,8 @@ export class MessagesService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
     @InjectModel(Conversation.name)
     private conversationModel: Model<Conversation>,
+    @InjectModel(Group.name)
+    private groupModel: Model<Group>,
   ) {}
 
   findAll() {
@@ -85,4 +88,26 @@ export class MessagesService {
     const messages = conversation;
     return messages;
   }
+
+  // --------- Group -----------
+  async createMessageInGroup(createMessageDto: CreateMessageDto) {
+    try {
+      console.log("createMessageInGroup")
+    } catch (error) {
+      console.log("er")
+    }
+  }
 }  
+
+
+
+
+
+
+
+
+
+
+
+
+
