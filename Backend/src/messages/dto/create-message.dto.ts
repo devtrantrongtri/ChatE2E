@@ -7,4 +7,5 @@ export class CreateMessageDto {
     receiverId: string;
     @IsNotEmpty()
     message: string;
+    groupName: string;
 }

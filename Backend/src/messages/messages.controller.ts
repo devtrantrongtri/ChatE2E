@@ -39,11 +39,12 @@ export class MessagesController {
   
     @ApiTags('messages')
     @UseGuards(AuthenticatedGuard)
-    @Post('group/:id')
+    @Post('group/:name')
     createMessageInGroup(
-      @Body() createMessageDto : CreateMessageDto,groupDto : CreateGroupDto,quantity: number,
+      @Body() createMessageDto : CreateMessageDto,
+      @Param('name') groupName: string
     ){
-      return this.messagesService.createMessageInGroup(createMessageDto,groupDto,quantity);
+      return this.messagesService.createMessageInGroup(createMessageDto,groupName);
     }
 
     @ApiTags('Group')

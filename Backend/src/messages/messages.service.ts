@@ -3,12 +3,15 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message } from './schemas/message.schemas';
-import { Model, ObjectIdSchemaDefinition } from 'mongoose';
+import { Model, ObjectId, ObjectIdSchemaDefinition } from 'mongoose';
 import { Conversation } from 'src/conversation/schemas/conversation.schema';
 import { appendFile } from 'fs';
 import { Group } from 'src/group/schemas/group.schema';
 import { CreateGroupDto } from 'src/group/dto/create-group.dto';
 import { Equals } from 'class-validator';
+const mongoose = require('mongoose');
+// import mongoose from 'mongoose';
+// // const { ObjectId } = mongoose.Types;
 
 @Injectable()
 export class MessagesService {
@@ -92,15 +95,56 @@ export class MessagesService {
   }
 
   // --------- Group -----------
-  async createMessageInGroup(createMessageDto: CreateMessageDto,groupDto: CreateGroupDto,quantity: number) {
+  async createMessageInGroup(createMessageDto: CreateMessageDto,groupName) {
+    console.log(groupName);
     try {
       console.log("createMessageInGroup")
       const message = await this.messageModel.create(createMessageDto);
-      // return message;
+      console.log("groupName", groupName)
 
-      let conversation = await this.conversationModel.findOne()
+      // return message;
+      let group = await this.groupModel.findOne({
+        groupName: groupName,
+      })
+      if(!group){
+        return "Group is not found";
+      }
+      let conversation = await this.conversationModel.findOne({
+        
+        // kiểm tra xem có thuộc member mới nhất không, dựa vào groupName và members.
+        participants: { $all: group.members },
+        
+        groupName: groupName
+      })
+
+      if(!conversation){
+        console.log("conversation is not found")
+        conversation = await this.conversationModel.create({
+          participants: group.members,
+          groupName: groupName
+        })
+      }
+
+      conversation.messageIds.push(message.id);
+      await conversation.save();
+      const isHaveConversation = group.groupConversation.map(conversation => conversation.toString()).includes(conversation.id);
+      if(!isHaveConversation){
+          const conversation_id = new mongoose.Types.ObjectId(conversation.id);
+          // thêm vào Group
+          group.groupConversation.push(conversation_id);
+        }
+        
+      await group.save();
+      return {
+        message,
+        messages: createMessageDto.message,
+        group,
+        msg: 'created message',
+      };
+
     } catch (error) {
-      console.log("er")
+      console.log("er tại lúc tạo mes in Group")
+      console.log(error)
     }
   }
 
@@ -111,13 +155,14 @@ export class MessagesService {
       if (!group) {
         return "Group is not found";
       }
-      const mongoose = require('mongoose');
       // Đảm bảo userId là một ObjectId mới
       const objectId = new mongoose.Types.ObjectId(userId);
-  
+      const userIdString = objectId.toString();
+      
       // Kiểm tra xem người dùng đã là thành viên chưa
-      const isMember = group.members.some(member => Equals(member,objectId));
+      const isMember = group.members.map(member => member.toString()).includes(userIdString);
       if (isMember) {
+        console.log("userID:",userId)
         return "You are already in this group";
       } else {
         // Thêm thành viên mới vào nhóm

@@ -6,4 +6,5 @@ export class CreateConversationDto {
     participants :[];
     @IsNotEmpty()
     messageIds: [];
+    groupName: string|null;
 }
