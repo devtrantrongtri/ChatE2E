@@ -17,6 +17,9 @@ export class Group {
     groupConversation : mongoose.Schema.Types.ObjectId[]; // chứa các conversation
 
     @Prop()
+    members : mongoose.Schema.Types.ObjectId[]; // chứa người dùng.
+
+    @Prop()
     groupDescription:string;
 
     @Prop({default:Date.now})

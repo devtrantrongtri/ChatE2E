@@ -4,6 +4,8 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateGroupDto } from 'src/group/dto/create-group.dto';
+import { ObjectIdSchemaDefinition } from 'mongoose';
 
 
 @Controller('messages')
@@ -37,10 +39,21 @@ export class MessagesController {
   
     @ApiTags('messages')
     @UseGuards(AuthenticatedGuard)
-    @Post('/group/:id')
+    @Post('group/:id')
     createMessageInGroup(
-      @Body() createMessageDto : CreateMessageDto,
+      @Body() createMessageDto : CreateMessageDto,groupDto : CreateGroupDto,quantity: number,
     ){
-    return this.messagesService.createMessageInGroup(createMessageDto);
+      return this.messagesService.createMessageInGroup(createMessageDto,groupDto,quantity);
+    }
+
+    @ApiTags('Group')
+    @UseGuards(AuthenticatedGuard)
+    @Post('joinGroup/:name')
+    joinGroup(
+      @Body() createGroupDto: CreateGroupDto,
+      @Param('name') userId: ObjectIdSchemaDefinition
+    
+    ) {
+      return this.messagesService.joinGroup(createGroupDto,userId)
     }
 }

@@ -3,10 +3,12 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message } from './schemas/message.schemas';
-import { Model } from 'mongoose';
+import { Model, ObjectIdSchemaDefinition } from 'mongoose';
 import { Conversation } from 'src/conversation/schemas/conversation.schema';
 import { appendFile } from 'fs';
 import { Group } from 'src/group/schemas/group.schema';
+import { CreateGroupDto } from 'src/group/dto/create-group.dto';
+import { Equals } from 'class-validator';
 
 @Injectable()
 export class MessagesService {
@@ -90,16 +92,48 @@ export class MessagesService {
   }
 
   // --------- Group -----------
-  async createMessageInGroup(createMessageDto: CreateMessageDto) {
+  async createMessageInGroup(createMessageDto: CreateMessageDto,groupDto: CreateGroupDto,quantity: number) {
     try {
       console.log("createMessageInGroup")
+      const message = await this.messageModel.create(createMessageDto);
+      // return message;
+
+      let conversation = await this.conversationModel.findOne()
     } catch (error) {
       console.log("er")
     }
   }
+
+  async joinGroup(GroupDto: CreateGroupDto,userId : ObjectIdSchemaDefinition){
+    try {
+      let group = await this.groupModel.findOne({ groupName: GroupDto.groupName });
+  
+      if (!group) {
+        return "Group is not found";
+      }
+      const mongoose = require('mongoose');
+      // Đảm bảo userId là một ObjectId mới
+      const objectId = new mongoose.Types.ObjectId(userId);
+  
+      // Kiểm tra xem người dùng đã là thành viên chưa
+      const isMember = group.members.some(member => Equals(member,objectId));
+      if (isMember) {
+        return "You are already in this group";
+      } else {
+        // Thêm thành viên mới vào nhóm
+        group.members.push(objectId);
+        await group.save(); // Lưu thay đổi vào cơ sở dữ liệu
+        console.log("New member added:", objectId, "to group:", group.groupName);
+        return "New member added successfully";
+      }
+    } catch (error) {
+      console.log("Error in JoinGroup", error);
+      return error.message;
+    }
+  
 }  
 
-
+}
 
 
 
