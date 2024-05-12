@@ -8,6 +8,8 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop({required: true, unique: true})
   username: string;
+  @Prop({default: null})
+  groupList:string[];
 
   @Prop({ type: Buffer }) // Sử dụng kiểu dữ liệu Buffer cho trường pubKey
   pubKey: Buffer;

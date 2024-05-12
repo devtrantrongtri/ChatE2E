@@ -9,6 +9,7 @@ import { appendFile } from 'fs';
 import { Group } from 'src/group/schemas/group.schema';
 import { CreateGroupDto } from 'src/group/dto/create-group.dto';
 import { Equals } from 'class-validator';
+import { User } from 'src/users/schemas/user.schema';
 const mongoose = require('mongoose');
 // import mongoose from 'mongoose';
 // // const { ObjectId } = mongoose.Types;
@@ -21,6 +22,7 @@ export class MessagesService {
     private conversationModel: Model<Conversation>,
     @InjectModel(Group.name)
     private groupModel: Model<Group>,
+    @InjectModel(User.name) private userModel: Model<User>
   ) {}
 
   findAll() {
@@ -133,7 +135,7 @@ export class MessagesService {
           // thêm vào Group
           group.groupConversation.push(conversation_id);
         }
-        
+
       await group.save();
       return {
         message,
@@ -169,6 +171,9 @@ export class MessagesService {
         group.members.push(objectId);
         await group.save(); // Lưu thay đổi vào cơ sở dữ liệu
         console.log("New member added:", objectId, "to group:", group.groupName);
+        let user = await this.userModel.findOne({ _id: userId });
+        user.groupList.push(group.groupName);
+        await user.save();
         return "New member added successfully";
       }
     } catch (error) {
