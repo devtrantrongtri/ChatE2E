@@ -17,7 +17,7 @@ function CreateGroup({ onCreateGroup}:any) {
   const handleSubmit = (event:any) => {
     event.preventDefault();
     // Validate form fields
-    if (!formData.groupName.trim() || !formData.groupDescription.trim()) {
+    if (!formData.groupName.trim() || !formData.groupDescription.trim()) { 
       alert('Please fill out all fields');
       return;
     }
@@ -35,8 +35,8 @@ function CreateGroup({ onCreateGroup}:any) {
 
     <form onSubmit={handleSubmit}>
       <div className="mb-4 ">
-        <label htmlFor="groupName" className="block text-sm font-medium text-white">
-          Group Name
+        <label htmlFor="groupName" className=" text-sm font-medium text-white flex justify-center uppercase">
+          Create Group
         </label>
         <input
           type="text"
@@ -50,9 +50,9 @@ function CreateGroup({ onCreateGroup}:any) {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="groupDescription" className="block text-sm font-medium text-white">
+        {/* <label htmlFor="groupDescription" className="block text-sm font-medium text-white">
           Group Description
-        </label>
+        </label> */}
         <textarea
           id="groupDescription"
           name="groupDescription"
@@ -63,8 +63,8 @@ function CreateGroup({ onCreateGroup}:any) {
           required
         />
       </div>
-      <div className="mt-4">
-        <button type="submit" className="bg-indigo-500 text-white py-2 px-4 rounded-md">
+      <div className="mt-4 flex justify-center">
+        <button type="submit" className="bg-indigo-500 text-white py-2 w-full rounded-md">
           Create Group
         </button>
       </div>

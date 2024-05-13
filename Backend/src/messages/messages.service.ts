@@ -109,7 +109,9 @@ export class MessagesService {
         groupName: groupName,
       })
       if(!group){
-        return "Group is not found";
+        return {
+          msg:"Group is not found"
+        };
       }
       let conversation = await this.conversationModel.findOne({
         
@@ -155,7 +157,9 @@ export class MessagesService {
       let group = await this.groupModel.findOne({ groupName: GroupDto.groupName });
   
       if (!group) {
-        return "Group is not found";
+        return {
+          msg:"Group is not found"
+        };
       }
       // Đảm bảo userId là một ObjectId mới
       const objectId = new mongoose.Types.ObjectId(userId);
@@ -165,7 +169,9 @@ export class MessagesService {
       const isMember = group.members.map(member => member.toString()).includes(userIdString);
       if (isMember) {
         console.log("userID:",userId)
-        return "You are already in this group";
+        return {
+          msg:"You are already in this group"
+        };
       } else {
         // Thêm thành viên mới vào nhóm
         group.members.push(objectId);
@@ -174,11 +180,18 @@ export class MessagesService {
         let user = await this.userModel.findOne({ _id: userId });
         user.groupList.push(group.groupName);
         await user.save();
-        return "New member added successfully";
+        return {
+          group,
+          user,
+          msg: 'Joined group',
+        };
       }
     } catch (error) {
       console.log("Error in JoinGroup", error);
-      return error.message;
+      return {
+        msg:"Error in JoinGroup",
+        error
+      };
     }
   
 }  

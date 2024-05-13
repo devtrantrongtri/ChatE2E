@@ -1,9 +1,15 @@
 'use client'
 import CreateGroup from '@/components/Group/CreateGroup';
+import GroupList from '@/components/Group/GroupList';
+import JoinGroup from '@/components/Group/JoinGroup';
 import HeaderSidebar from '@/components/SideBar/HeaderSidebar';
 import React, { useEffect } from 'react'
 
-function Group() {
+function Group({
+  params,
+}: {
+  params: { userid: string };
+}) {
   useEffect(() => {
     const el = document.getElementById('messages');
     if (el) {
@@ -11,7 +17,7 @@ function Group() {
     }
   }, []);
 
-  const users = [
+  const myGroup = [
     { _id: 1, username: 'user1', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
     { _id: 2, username: 'user2', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
     { _id: 3, username: 'user3', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
@@ -24,49 +30,78 @@ function Group() {
     { _id: 10, username:'user10',avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' }
   ];
   
+const joinGroup = async(groupName: string) => {
+  console.log(groupName);
+  try {
+    const response = await fetch(`http://localhost:4041/messages/joinGroup/${params.userid}`,{
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        groupName: groupName,
+      }),
+    });
+    if(response.ok){
+      const data = await response.json();
+      console.log("data ở đây",data);
+      alert(` ${data.msg}`);
+      return data;
+    }
+  } catch (error) {
+    console.log( "Lỗi ở đây",error)
+    return error
+  }
+}
+const createGroup = async (groupData : any) => {
+  // console.log('Creating group with data:', groupData);
+  try {
+    const response = await fetch("http://localhost:4041/group", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        groupName: groupData.groupName,
+        groupDescription: groupData.groupDescription
+      }),
+    });
 
-  const createGroup = (groupData:any) => {
-    // This function could make an API call to create a new group
-    console.log('Creating group with data:', groupData);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-    // gọi API tạo group tại đây.
-  };
+    const data = await response.json();
+    // console.log("duuwx liệu :",data);
+    // Check the response to determine the message
+    if (Object.keys(data).length === 0) { // trả về {}
+      // console.log('Group already exists.');
+      alert("Group already exists");
+      return 'Group already exists';
+    } else {
+      // console.log('Group created successfully:', data);
+      alert(`Group ${data.groupName} created successfully`);
+      return 'Group created successfully';
+    }
+  } catch (error) {
+    alert(`Failed to create group with error: ${error}`);
+  }
+};
+
   return (
     <div className='flex h-screen overflow-hidden'>
       <div className="w-1/4 bg-white border-r border-gray-300">
         {/* Sidebar Header */}
-        <HeaderSidebar username={""} userid={'663c3729bc1c8bcb6aa6f4b6'} ></HeaderSidebar>
-        <div className='h-2/5'>
+        <HeaderSidebar username={""} userid={params.userid} ></HeaderSidebar>
+        <div className='overflow-y-auto h-1/4'>
           <CreateGroup onCreateGroup={createGroup}></CreateGroup>
         </div>
           <hr />
+          <div className='overflow-y-auto h-1/6'>
+            <JoinGroup onJoinGroup={joinGroup}></JoinGroup>
+          </div>
+          <hr />
         {/*Side Bar Contact List */}
-        <div className="overflow-y-auto bg-slate-950 h-3/5 p-3 mb-9 pb-20">
-          {users.map((user) => (
-            <div
-              key={user._id}
-              typeof="checkbox"
-              className={` flex items-center  mb-4 cursor-pointer text-white hover:text-black hover:bg-gray-400 active:bg-gray-50  p-2 rounded-md `}
-            >
-              <div className="w-12 h-12 rounded-full mr-3 ">
-                <img
-                  src={
-                    user.avatarUrl
-                      ? user.avatarUrl
-                      : `https://placehold.co/200x/FFFAF0/0A0A0A.svg?text=${user.username
-                          .charAt(0)
-                          .toUpperCase()}&font=Lato`
-                  }
-                  alt="User Avatar"
-                  className="w-12 h-12 rounded-full bg-white border-4 border-solid border-indigo-500/75"
-                />
-              </div>
-              <div className="flex-1  ">
-                <h2 className="text-lg   font-semibold">{user.username}</h2>
-                {/* <p className="text-gray-600">**********</p> */}
-              </div>
-            </div>
-          ))}
+        <div className='overflow-y-auto h-3/5'>
+        <GroupList onGroupList={myGroup}></GroupList>
         </div>
       </div>
 
@@ -266,7 +301,7 @@ export default Group
       <div className="flex items-end justify-end">
         <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
           <div><span className="px-4 py-2 rounded-lg inline-block bg-blue-600 text-white ">Are you using sudo?</span></div>
-          <div><span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Run this command sudo chown -R `whoami` /Users/{'{'}{'{'}your_user_profile{'}'}{'}'}/.npm-global/ then install the package globally without using sudo</span></div>
+          <div><span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Run this command sudo chown -R `whoami` /myGroup/{'{'}{'{'}your_user_profile{'}'}{'}'}/.npm-global/ then install the package globally without using sudo</span></div>
         </div>
         <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-2" />
       </div>
@@ -274,7 +309,7 @@ export default Group
     <div className="chat-message">
       <div className="flex items-end">
         <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
-          <div><span className="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">It seems like you are from Mac OS world. There is no /Users/ folder on linux ?</span></div>
+          <div><span className="px-4 py-2 rounded-lg inline-block bg-gray-300 text-gray-600">It seems like you are from Mac OS world. There is no /myGroup/ folder on linux ?</span></div>
           <div><span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">I have no issue with any other packages installed with root permission globally.</span></div>
         </div>
         <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-1" />

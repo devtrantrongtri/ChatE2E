@@ -14,7 +14,7 @@ const HeaderSidebar : React.FC<PropsChatPage> = ({username,userid})=> {
     <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-slate-700 text-white font-bold">
           <a href="/login" onClick={handleLogout}><CiLogout className='size-10 float float-start relative'/></a>
           {/* <h1 className="text-2xl relative font-semibold">friends {username}</h1> */}
-          {pathname === '/group' ? <Link href={`/chat/${userid}`}>Home Chat</Link> : <Link href="/group">Group</Link>}
+          {pathname === `/group/${userid}` ? <Link href={`/chat/${userid}`}>Go to Home Chat</Link> : <Link href={`/group/${userid}`}>Go to Group</Link>}
           <div className="relative">
           </div>
     </header>
