@@ -101,7 +101,7 @@ const createGroup = async (groupData : any) => {
           <hr />
         {/*Side Bar Contact List */}
         <div className='overflow-y-auto h-3/5'>
-        <GroupList onGroupList={myGroup}></GroupList>
+        <GroupList onGroupList={myGroup}></GroupList>                                                  
         </div>
       </div>
 

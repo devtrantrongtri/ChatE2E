@@ -57,4 +57,14 @@ export class MessagesController {
     ) {
       return this.messagesService.joinGroup(createGroupDto,userId)
     }
+
+    @ApiTags('messages/Group')
+    @UseGuards(AuthenticatedGuard)
+    @Get('/group/:group')
+    getMessagesInGroup(
+      @Param('group') groupName: string,
+      @Req() req){
+
+         return this.messagesService.getMessagesInGroup(groupName);
+      }
 }

@@ -19,6 +19,10 @@ export class Group {
     @Prop()
     members : mongoose.Schema.Types.ObjectId[]; // chứa người dùng.
 
+    @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }], default: [] })
+    messageIds;
+    @Prop()
+    groupAvatar:string;     
     @Prop()
     groupDescription:string;
 

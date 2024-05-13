@@ -11,7 +11,9 @@ export class Message {
 
   @Prop({required: true,type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   receiverId : string;
-
+  @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  participants;
+  
   @Prop()
   message : string;
 

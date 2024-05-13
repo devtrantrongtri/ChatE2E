@@ -45,7 +45,8 @@ export class MessagesService {
     try {
       // Tạo tin nhắn mới
       const message = await this.messageModel.create(createMessageDto);
-
+      message.participants.push(createMessageDto.senderId, createMessageDto.receiverId)  
+      await message.save();
       // Tìm hoặc tạo cuộc trò chuyện dựa trên người gửi và người nhận
       let conversation = await this.conversationModel.findOne({
         participants: {
@@ -83,6 +84,7 @@ export class MessagesService {
     let conversation = await this.conversationModel
       .findOne({
         participants: { $all: [senderID, receiverID] },
+        groupName: null,
       })
       .populate('messageIds'); // Truy vấn và nối các tin nhắn của cuộc trò chuyện
 
@@ -113,6 +115,9 @@ export class MessagesService {
           msg:"Group is not found"
         };
       }
+      message.participants.push(...group.members);
+      await message.save()
+      
       let conversation = await this.conversationModel.findOne({
         
         // kiểm tra xem có thuộc member mới nhất không, dựa vào groupName và members.
@@ -137,14 +142,15 @@ export class MessagesService {
           // thêm vào Group
           group.groupConversation.push(conversation_id);
         }
-
+        group.messageIds.push(message.id);
       await group.save();
       return {
-        message,
-        messages: createMessageDto.message,
-        group,
-        msg: 'created message',
+        success: true,
+        message: message,
+        group: group,
+        msg: 'Created message successfully'
       };
+      
 
     } catch (error) {
       console.log("er tại lúc tạo mes in Group")
@@ -195,7 +201,22 @@ export class MessagesService {
     }
   
 }  
+async getMessagesInGroup(groupName: string) {
+  // Tìm cuộc trò chuyện dựa trên người gửi và người nhận
+  let MessageInGroup = await this.groupModel
+    .findOne({
+      groupName: groupName,
+    })
+    .populate('messageIds'); // Truy vấn và nối các tin nhắn của cuộc trò chuyện
 
+  // Nếu không tìm thấy cuộc trò chuyện, trả về mảng rỗng
+  if (!MessageInGroup) {
+    return [];
+  }
+
+  // Trả về các tin nhắn của cuộc trò chuyện
+  return MessageInGroup
+}
 }
 
 
