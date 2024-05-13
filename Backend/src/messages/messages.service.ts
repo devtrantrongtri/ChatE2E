@@ -184,7 +184,7 @@ export class MessagesService {
         await group.save(); // Lưu thay đổi vào cơ sở dữ liệu
         console.log("New member added:", objectId, "to group:", group.groupName);
         let user = await this.userModel.findOne({ _id: userId });
-        user.groupList.push(group.groupName);
+        user.groupList.push(group.id);
         await user.save();
         return {
           group,
@@ -217,6 +217,8 @@ async getMessagesInGroup(groupName: string) {
   // Trả về các tin nhắn của cuộc trò chuyện
   return MessageInGroup
 }
+
+
 }
 
 

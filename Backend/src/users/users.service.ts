@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import mongoose, { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 
 @Injectable()
 export class UsersService {
@@ -47,6 +49,24 @@ async isMatchPass(password: string,hash: string){
         const { password, ...rest } = user.toObject();
         return rest;
     });
+  }
+  @ApiTags('user/group')
+  @UseGuards(AuthenticatedGuard)
+  async getAllGroupOfUser(userId:string) {
+    const GroupList = await this.userModel
+    .findOne({ _id: userId })
+    .populate('groupList');
+    if(GroupList){
+      return {
+        msg: GroupList,
+        sucess: true
+      }
+    }else{
+      return {
+        msg: "No group found",
+        sucess: false
+      };
+    }
   }
   async findAllNoIts(id: string) {
     const users = await this.userModel.find({ _id: { $ne: id } }).exec();

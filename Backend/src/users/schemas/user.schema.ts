@@ -1,6 +1,6 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -8,8 +8,9 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop({required: true, unique: true})
   username: string;
-  @Prop({default: null})
-  groupList:string[];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }], default: [] })
+  groupList: mongoose.Schema.Types.ObjectId[];
+  
 
   @Prop({ type: Buffer }) // Sử dụng kiểu dữ liệu Buffer cho trường pubKey
   pubKey: Buffer;

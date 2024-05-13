@@ -97,4 +97,11 @@ export class UsersController {
   findAllUserNoIts(@Param('id') id:string) {
     return this.usersService.findAllNoIts(id);
   }
+
+  @ApiTags('user')
+  @UseGuards(AuthenticatedGuard)
+  @Get('group/:id')
+  getAllGroupOfUser(@Param('id') id:string) {
+    return this.usersService.getAllGroupOfUser(id);
+  }
 }
