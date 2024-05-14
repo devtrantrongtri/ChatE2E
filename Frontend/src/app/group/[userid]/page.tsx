@@ -3,31 +3,55 @@ import CreateGroup from '@/components/Group/CreateGroup';
 import GroupList from '@/components/Group/GroupList';
 import JoinGroup from '@/components/Group/JoinGroup';
 import HeaderSidebar from '@/components/SideBar/HeaderSidebar';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Group({
   params,
 }: {
   params: { userid: string };
 }) {
+  const [userGroups, setUserGroups] = useState([]);
+
+
+  //======================= use effect =========================
   useEffect(() => {
     const el = document.getElementById('messages');
     if (el) {
       el.scrollTop = el.scrollHeight;
     }
   }, []);
+  useEffect(() => {
+      const fetchUserGroups = async () => {
+          try {
+              const response = await fetch(`http://localhost:4041/users/group/${params.userid}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',});
+              const data = await response.json();
+              console.log(data.success , "and", data.msg.groupList);
+              if (data.success) {
+                  setUserGroups(data.msg.groupList);
+              } else {
+                  console.error('Failed to load groups', data);
+              }
+          } catch (error) {
+              console.error('Error fetching groups:', error);
+          }
+      };
 
+      fetchUserGroups();
+  }, [params.userid]);
   const myGroup = [
-    { _id: 1, username: 'user1', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 2, username: 'user2', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 3, username: 'user3', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 4, username: 'user4', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 5, username: 'user5', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 6, username: 'user6', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 7, username: 'user7', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 8, username: 'user8', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 9, username: 'user9', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' },
-    { _id: 10, username:'user10',avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621' }
+    { _id: '2', groupName: 'Group2', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '1', groupName: 'Group1', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '3', groupName: 'Group3', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '4', groupName: 'Group4', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '5', groupName: 'Group5', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '6', groupName: 'Group6', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '7', groupName: 'Group7', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '8', groupName: 'Group8', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '9', groupName: 'Group9', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
+    { _id: '10', groupName:'Group10',avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" }
   ];
   
 const joinGroup = async(groupName: string) => {
@@ -91,6 +115,7 @@ const createGroup = async (groupData : any) => {
       <div className="w-1/4 bg-white border-r border-gray-300">
         {/* Sidebar Header */}
         <HeaderSidebar username={""} userid={params.userid} ></HeaderSidebar>
+        <hr />
         <div className='overflow-y-auto h-1/4'>
           <CreateGroup onCreateGroup={createGroup}></CreateGroup>
         </div>
@@ -101,7 +126,7 @@ const createGroup = async (groupData : any) => {
           <hr />
         {/*Side Bar Contact List */}
         <div className='overflow-y-auto h-3/5'>
-        <GroupList onGroupList={myGroup}></GroupList>                                                  
+        <GroupList groups={userGroups}></GroupList>                                                  
         </div>
       </div>
 

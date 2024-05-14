@@ -59,12 +59,12 @@ async isMatchPass(password: string,hash: string){
     if(GroupList){
       return {
         msg: GroupList,
-        sucess: true
+        success: true
       }
     }else{
       return {
         msg: "No group found",
-        sucess: false
+        success: false
       };
     }
   }
