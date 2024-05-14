@@ -12,9 +12,10 @@ type Message = {
     interface ChatListProps {
       groupName: string;
       userId : string;
+      trigger:any
     //   onChatClick: (Chat: string) => void;
   }
-const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId }) => {
+const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId }) => {
         fetchMessages();
         setMessages([])
     }
-  }, [groupName]);
+  }, [groupName,trigger]);
 
   useEffect(() => {
     const el = document.getElementById('messages');
