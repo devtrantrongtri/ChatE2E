@@ -11,6 +11,7 @@ function Group({
   params: { userid: string };
 }) {
   const [userGroups, setUserGroups] = useState([]);
+  const [updateTrigger, setUpdateTrigger] = useState(1); // use a simple counter to trigger updates
 
 
   //======================= use effect =========================
@@ -40,7 +41,7 @@ function Group({
       };
 
       fetchUserGroups();
-  }, [params.userid]);
+  }, [params.userid, updateTrigger]);
   const myGroup = [
     { _id: '2', groupName: 'Group2', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
     { _id: '1', groupName: 'Group1', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
@@ -67,7 +68,7 @@ const joinGroup = async(groupName: string) => {
     });
     if(response.ok){
       const data = await response.json();
-      console.log("data ở đây",data);
+      setUpdateTrigger(prev => prev + 1); // Increment to trigger re-fetch
       alert(` ${data.msg}`);
       return data;
     }
