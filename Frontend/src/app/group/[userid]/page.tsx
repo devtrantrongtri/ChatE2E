@@ -1,4 +1,5 @@
 'use client'
+import ChatMessages from '@/components/Group/ChatMessages';
 import CreateGroup from '@/components/Group/CreateGroup';
 import GroupList from '@/components/Group/GroupList';
 import JoinGroup from '@/components/Group/JoinGroup';
@@ -11,7 +12,10 @@ function Group({
   params: { userid: string };
 }) {
   const [userGroups, setUserGroups] = useState([]);
+  const [messageGroups, setMessageGroups] = useState([]);
   const [updateTrigger, setUpdateTrigger] = useState(1); // use a simple counter to trigger updates
+  const [selectedGroup, setSelectedGroup] = useState<string>('');
+
 
 
   //======================= use effect =========================
@@ -40,8 +44,32 @@ function Group({
           }
       };
 
+      const fetchMessageGroups = async () => {
+        try {
+          const response = await fetch(`http://localhost:4041/messages/group/${selectedGroup}`,{
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          })
+          if(response.ok){
+            const data = await response.json();
+            if(data){
+              setMessageGroups(data.messageIds);
+            }else{
+              console.error('Failed to load groups', data);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching groups:', error);
+        }
+      }
+
       fetchUserGroups();
-  }, [params.userid, updateTrigger]);
+
+      fetchMessageGroups();
+
+
+  }, [params.userid, updateTrigger,selectedGroup]);
   const myGroup = [
     { _id: '2', groupName: 'Group2', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
     { _id: '1', groupName: 'Group1', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
@@ -68,7 +96,6 @@ const joinGroup = async(groupName: string) => {
     });
     if(response.ok){
       const data = await response.json();
-      setUpdateTrigger(prev => prev + 1); // Increment to trigger re-fetch
       alert(` ${data.msg}`);
       return data;
     }
@@ -110,7 +137,13 @@ const createGroup = async (groupData : any) => {
     alert(`Failed to create group with error: ${error}`);
   }
 };
-
+  // Handle group click
+  const handleGroupClick = (group:string) => {
+    console.log("Group clicked:", group);
+    setSelectedGroup(group); 
+    setUpdateTrigger(prev => prev + 1);
+     // Now you can use this data in your component
+};
   return (
     <div className='flex h-screen overflow-hidden'>
       <div className="w-1/4 bg-white border-r border-gray-300">
@@ -127,7 +160,7 @@ const createGroup = async (groupData : any) => {
           <hr />
         {/*Side Bar Contact List */}
         <div className='overflow-y-auto h-3/5'>
-        <GroupList groups={userGroups}></GroupList>                                                  
+        <GroupList groups={userGroups} onGroupClick={handleGroupClick}></GroupList>                                                  
         </div>
       </div>
 
@@ -181,9 +214,9 @@ const createGroup = async (groupData : any) => {
 
 
 
-
+<ChatMessages groupName={selectedGroup} userId={params.userid}></ChatMessages>
 {/* tin nhắn ở đây */}
-<div id="messages" className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+{/* <div id="messages" className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
 <div className="chat-message">
     <div className="flex items-end">
       <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
@@ -200,7 +233,7 @@ const createGroup = async (groupData : any) => {
       <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-2" />
     </div>
   </div>
-  </div>
+  </div> */}
 
 
 
