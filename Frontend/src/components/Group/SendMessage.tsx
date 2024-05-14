@@ -8,10 +8,11 @@ interface SendMessageProps {
 }
 const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,groupName ,handleUpdateMessageTrigger}) => {
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
     if (message.trim() === '') return;
-
+    setLoading(true);
     try {
       const response = await fetch(`http://localhost:4041/messages/group/${groupName}`, {
         method: 'POST',
@@ -32,6 +33,8 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
       }
     } catch (error) {
       console.error('Error sending message:', error);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -73,11 +76,21 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
             type="button"
             className="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
             onClick={sendMessage}
+            disabled={loading}
           >
-            <span className="font-bold">Send</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-6 w-6 ml-2 transform rotate-90">
-              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-            </svg>
+            {loading ? (
+              <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path d="M12 2a10 10 0 0 0 0 20 10 10 0 0 0 0-20zm0 2c4.411 0 8 3.589 8 8s-3.589 8-8 8-8-3.589-8-8 3.589-8 8-8zm0 1.333a6.667 6.667 0 1 0 0 13.334A6.667 6.667 0 0 0 12 5.333zM11 7h2v6h-2zm0 8h2v2h-2z" />
+              </svg>
+            ) : (
+              <>
+                <span className="font-bold">Send</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-6 w-6 ml-2 transform rotate-90">
+                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                </svg>
+              </>
+            )}
           </button>
         </div>
       </div>

@@ -17,10 +17,11 @@ type Message = {
   }
 const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) => {
   const [messages, setMessages] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     // Gọi API để lấy tin nhắn
     const fetchMessages = async () => {
+        setLoading(true);
       try {
         const response = await fetch(`http://localhost:4041/messages/group/${groupName}`,{
             method: 'GET',
@@ -36,6 +37,8 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) =>
         }
       } catch (error) {
         console.error('Error fetching messages:', error);
+      }finally {
+        setLoading(false);
       }
     };
 
