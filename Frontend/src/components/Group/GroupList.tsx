@@ -6,16 +6,17 @@ type Group = {
   groupName: string;
   groupDescription?: string; 
   avatarUrl : string;
+  members : string[];
 };
 
   
   // Props definition using TypeScript for better type checking
   interface GroupListProps {
     groups: Group[];
-    onGroupClick: (groupName: string,groupId :string) => void;
+    onGroupClick: (groupName: string,groupId :string,members:string[]) => void;
 }
   const GroupList: React.FC<GroupListProps> = ({ groups,onGroupClick }) =>{
-
+// console.log("GroupList",groups)
   return (
     <div className=" bg-slate-950  p-3 mb-9 pb-20 h-screen">
         <label htmlFor="groupName" className=" text-sm font-medium text-white flex justify-center uppercase">
@@ -26,7 +27,7 @@ type Group = {
               key={group._id}
               typeof="checkbox"
               className={` flex items-center  mb-4 cursor-pointer text-white hover:text-black hover:bg-gray-400 active:bg-gray-50 p-2 rounded-md `}
-              onClick={() => onGroupClick(group.groupName,group._id)}
+              onClick={() => onGroupClick(group.groupName,group._id,group.members)}
             >
               <div className="w-12 h-12 rounded-full mr-3 ">
                 <img

@@ -7,7 +7,13 @@ import SendMessageInGroup from '@/components/Group/SendMessage';
 import HeaderSidebar from '@/components/SideBar/HeaderSidebar';
 
 import React, { useEffect, useState } from 'react'
-
+interface Group {
+  _id: string;
+  groupName: string;
+  members: string[]; 
+  // avatarUrl?: string;
+  // groupDescription?: string;
+}
 function Group({
   params,
 }: {
@@ -16,9 +22,10 @@ function Group({
   const [userGroups, setUserGroups] = useState([]);
   const [messageGroups, setMessageGroups] = useState([]);
   const [updateTrigger, setUpdateTrigger] = useState(1); // use a simple counter to trigger updates
-  const [selectedGroup, setSelectedGroup] = useState({
+  const [selectedGroup, setSelectedGroup] = useState<Group>({
     _id: '',
-    groupName: ''
+    groupName: '',
+    members : []
     // avatarUrl: string;
     // groupDescription: '';
   });
@@ -130,9 +137,9 @@ const createGroup = async (groupData : any) => {
   }
 };
   // Handle group click
-  const handleGroupClick = (groupName:string,groupId:string) => {
+  const handleGroupClick = (groupName:string,groupId:string,members:string[]) => {
     console.log("Group clicked:", groupName,groupId);
-    setSelectedGroup({...selectedGroup, groupName:groupName,_id:groupId}); 
+    setSelectedGroup({...selectedGroup, groupName:groupName,_id:groupId,members:members}); 
     setUpdateTrigger(prev => prev + 1);
      // Now you can use this data in your component
 };
@@ -183,9 +190,9 @@ const  handleUpdateMessageTrigger = async () => {
       
       <div className="flex flex-col leading-tight">
         <div className="text-2xl mt-1 flex items-center">
-          <span className="text-white mr-3">Nhóm SGOD </span>
+          <span className="text-white mr-3">{selectedGroup.groupName}</span>
         </div>
-        <span className="text-lg text-gray-600">10 người</span>
+        <span className="text-lg text-gray-600">{selectedGroup.members ? selectedGroup.members.length+1 + ' member' : ''}</span>
       </div>
     </div>
 
