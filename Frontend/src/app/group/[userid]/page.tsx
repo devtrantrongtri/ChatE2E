@@ -5,6 +5,8 @@ import GroupList from '@/components/Group/GroupList';
 import JoinGroup from '@/components/Group/JoinGroup';
 import SendMessageInGroup from '@/components/Group/SendMessage';
 import HeaderSidebar from '@/components/SideBar/HeaderSidebar';
+import { AuthContextProvider } from '@/context/AuthenContext';
+import { SocketContextProvider } from '@/context/SocketContext';
 
 import React, { useEffect, useState } from 'react'
 interface Group {
@@ -148,6 +150,8 @@ const  handleUpdateMessageTrigger = async () => {
   // await fetchMessageGroups()
 };
   return (
+    <AuthContextProvider>
+      <SocketContextProvider>
     <div className='flex h-screen overflow-hidden'>
       <div className="w-1/4 bg-white border-r border-gray-300">
         {/* Sidebar Header */}
@@ -192,7 +196,7 @@ const  handleUpdateMessageTrigger = async () => {
         <div className="text-2xl mt-1 flex items-center">
           <span className="text-white mr-3">{selectedGroup.groupName}</span>
         </div>
-        <span className="text-lg text-gray-600">{selectedGroup.members ? selectedGroup.members.length+1 + ' member' : ''}</span>
+        <span className="text-lg text-gray-600">{selectedGroup.members ? selectedGroup.members.length + ' member' : ''}</span>
       </div>
     </div>
 
@@ -241,14 +245,12 @@ const  handleUpdateMessageTrigger = async () => {
 
   <SendMessageInGroup senderId={params.userid} receiverId={selectedGroup._id} groupName={selectedGroup.groupName} handleUpdateMessageTrigger = {handleUpdateMessageTrigger}></SendMessageInGroup>
 
-
-
-
 </div>
 
 </div>
 
-
+</SocketContextProvider>
+    </AuthContextProvider>
   )
 }
 

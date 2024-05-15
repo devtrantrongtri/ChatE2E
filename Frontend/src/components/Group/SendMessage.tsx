@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useSocketContext } from '@/context/SocketContext';
+import React, { useEffect, useState } from 'react';
 
 interface SendMessageProps {
     receiverId: string 
@@ -8,11 +9,26 @@ interface SendMessageProps {
 }
 const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,groupName ,handleUpdateMessageTrigger}) => {
   const [message, setMessage] = useState('');
+  const [messageSent, setMessageSent] = useState<string>();
   const [loading, setLoading] = useState(false);
-
+  const { socket } = useSocketContext();
+  useEffect(() => {
+    if (socket) {
+      socket.on("updateMessageSignal", () => {
+        console.log("update Message nèeeeeeeeeeeeeeeeeee")
+        handleUpdateMessageTrigger(); // Update messages when messageSentSignal is received
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off("updateMessageSignal"); // Clean up event listener when component unmounts
+      }
+    };
+  }, [socket,messageSent]);
   const sendMessage = async () => {
     if (message.trim() === '') return;
     setLoading(true);
+    setMessageSent(message);
     try {
       const response = await fetch(`http://localhost:4041/messages/group/${groupName}`, {
         method: 'POST',
@@ -34,7 +50,9 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
-        setLoading(false);
+      console.log('hàm này được gọi');
+      socket?.emit("messageSentSignal");
+      setLoading(false);
     }
   };
 
