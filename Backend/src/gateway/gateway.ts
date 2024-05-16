@@ -56,6 +56,24 @@ export class MyGateWay implements OnModuleInit {
         
         socket.broadcast.emit('updateMessageSignal');
       });
+
+
+      // // tạo cổng nhận tin nhắn group,
+      // socket.on('groupMessageSentSignal', (groupName: string) => {
+      //   socket.to(groupName).emit('updateMessageSignal');
+      // });
+
+      socket.on('groupMessage', (data : any) => {
+        console.log(data)
+        // socket.to(data.groupName).emit('groupMessageSent',data);
+        this.server.to(data.groupName).emit('groupMessageSent', data);
+      })
+
+      socket.on('groupSocketConnected', (groupName : string) => {
+        console.log("Joined ",groupName)
+        socket.join(groupName);
+        
+      })
     });
   }
 }

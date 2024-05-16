@@ -1,3 +1,4 @@
+import { useSocketContext } from '@/context/SocketContext';
 import React, { useState, useEffect } from 'react';
 type Message = {
     _id: string;
@@ -18,6 +19,36 @@ type Message = {
 const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { socket } = useSocketContext();
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on("groupMessageSent", (data) => {
+  //       console.log("update Message nèeeeeeeeeeeeeeeeeee",data)
+  //       // handleUpdateMessageTrigger(); // Update messages when messageSentSignal is received
+  //     });
+  //   }
+  //   return () => {
+  //     if (socket) {
+  //       socket.off("groupMessageSent"); // Clean up event listener when component unmounts
+  //     }
+  //   };
+  // }, [socket]);
+  console.log(socket);
+  useEffect(() => {
+    if (socket) {
+      console.log(`Emitting groupSocketConnected for group ${groupName}`);
+      socket.emit('groupSocketConnected', groupName);
+
+      socket.on('groupMessageSent', (msg: Message) => {
+        // setMessages((prev) => [...prev, msg]);
+        console.log("update message", msg);
+      });
+
+      return () => {
+        socket.off('groupMessageSent');
+      };
+    }
+  }, [socket, groupName]);
   useEffect(() => {
     // Gọi API để lấy tin nhắn
     const fetchMessages = async () => {
@@ -46,7 +77,7 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) =>
         fetchMessages();
         setMessages([])
     }
-  }, [groupName,trigger]);
+  }, [groupName]);
 
   useEffect(() => {
     const el = document.getElementById('messages');

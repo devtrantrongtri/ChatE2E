@@ -12,46 +12,36 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
   const [messageSent, setMessageSent] = useState<string>();
   const [loading, setLoading] = useState(false);
   const { socket } = useSocketContext();
-  useEffect(() => {
-    if (socket) {
-      socket.on("updateMessageSignal", () => {
-        console.log("update Message nèeeeeeeeeeeeeeeeeee")
-        handleUpdateMessageTrigger(); // Update messages when messageSentSignal is received
-      });
-    }
-    return () => {
-      if (socket) {
-        socket.off("updateMessageSignal"); // Clean up event listener when component unmounts
-      }
-    };
-  }, [socket,messageSent]);
+
   const sendMessage = async () => {
     if (message.trim() === '') return;
     setLoading(true);
     setMessageSent(message);
-    try {
-      const response = await fetch(`http://localhost:4041/messages/group/${groupName}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ receiverId, senderId, message }),
-      });
-      const data = await response.json();
 
+
+    try {
+      // const response = await fetch(`http://localhost:4041/messages/group/${groupName}`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   credentials: 'include',
+      //   body: JSON.stringify({ receiverId, senderId, message }),
+      // });
+      // const data = await response.json();
+      const data = {receiverId, senderId, message,groupName,success : true}
       if (data.success) {
         // Xử lý khi gửi tin nhắn thành công (ví dụ: cập nhật danh sách tin nhắn)
-        handleUpdateMessageTrigger(); // Cập nhật danh sách tin nhắn
+        // handleUpdateMessageTrigger(); // Cập nhật danh sách tin nhắn
+      socket?.emit("groupMessage", data);
         setMessage(''); // Xóa nội dung tin nhắn sau khi gửi
       } else {
-        console.error('Failed to send message:', data.msg);
+        console.error('Failed to send message:', data);
       }
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
-      console.log('hàm này được gọi');
-      socket?.emit("messageSentSignal");
+      // console.log('hàm này được gọi');
       setLoading(false);
     }
   };
@@ -94,7 +84,7 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
             type="button"
             className="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
             onClick={sendMessage}
-            disabled={loading}
+            // disabled={loading}
           >
             {loading ? (
               <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
