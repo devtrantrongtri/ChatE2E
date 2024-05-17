@@ -146,9 +146,10 @@ export class MessagesService {
       await group.save();
       return {
         success: true,
-        message: message,
-        group: group,
-        msg: 'Created message successfully'
+        // message: message,
+        participants : message.participants
+        // group: group,
+        // msg: 'Created message successfully'
       };
       
 

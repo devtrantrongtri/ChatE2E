@@ -1,6 +1,14 @@
 import { OnModuleInit } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { Model } from "mongoose";
 import { Server } from "socket.io";
+import { Conversation } from "src/conversation/schemas/conversation.schema";
+import { Group } from "src/group/schemas/group.schema";
+import { CreateMessageDto } from "src/messages/dto/create-message.dto";
+import { MessagesService } from "src/messages/messages.service";
+import { Message } from "src/messages/schemas/message.schemas";
+import { User } from "src/users/schemas/user.schema";
 
 @WebSocketGateway({
   cors: {
@@ -16,7 +24,17 @@ export class MyGateWay implements OnModuleInit {
   // Map để lưu trữ ID của người dùng và ID của socket tương ứng
   userSocketMap: { [userId: string]: string } = {};
 
-  constructor() {
+  constructor(
+    // @InjectModel(Message.name) 
+    // private messageModel: Model<Message>,
+    // @InjectModel(Conversation.name)
+    // private conversationModel: Model<Conversation>,
+    // @InjectModel(Group.name)
+    // private groupModel: Model<Group>,
+    // @InjectModel(User.name) private userModel: Model<User>
+    private readonly messagesService: MessagesService
+  ) {
+    
     // Ràng buộc ngữ cảnh của phương thức getReceiverSocketId
     this.getReceiverSocketId = this.getReceiverSocketId.bind(this);
   }
@@ -58,17 +76,37 @@ export class MyGateWay implements OnModuleInit {
       });
 
 
-      // // tạo cổng nhận tin nhắn group,
-      // socket.on('groupMessageSentSignal', (groupName: string) => {
-      //   socket.to(groupName).emit('updateMessageSignal');
-      // });
 
-      socket.on('groupMessage', (data : any) => {
+      socket.on('groupMessage',async (data : any) => {
+        /* data 
+        {
+          receiverId: '664776414c3969b77705dd9e', 
+          senderId: '66424c7d8009f28a09a69445',   
+          message: 'chào brd',
+          groupName: 'KTX',
+          success: true
+        }
+        */
         console.log(data)
-        // socket.to(data.groupName).emit('groupMessageSent',data);
-        this.server.to(data.groupName).emit('groupMessageSent', data);
-      })
 
+        const messageDto = {
+          groupName: data.groupName,
+          message: data.message,
+          receiverId: data.receiverId,
+          senderId: data.senderId,
+      } as CreateMessageDto;
+
+        const participants = await this.messagesService.createMessageInGroup(messageDto,data.groupName);
+        console.log("Message in server : ",participants)
+        const updatedData = {
+          ...data,
+          participants
+      };
+
+        // socket.to(data.groupName).emit('groupMessageSent',data);
+        this.server.to(data.groupName).emit('groupMessageSent', updatedData);
+      })
+      // khi click vào group ở sideBar, sẽ được vào group.
       socket.on('groupSocketConnected', (groupName : string) => {
         console.log("Joined ",groupName)
         socket.join(groupName);

@@ -45,7 +45,11 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
       setLoading(false);
     }
   };
-
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  };
   return (
     <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
       <div className="relative flex">
@@ -61,6 +65,7 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
           placeholder="Write your message!"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
         />
         <div className="absolute right-0 items-center inset-y-0 hidden sm:flex">

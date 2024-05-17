@@ -37,15 +37,15 @@ export class MessagesController {
        return this.messagesService.getMessages(senderID, receiverID);
     }
   
-    @ApiTags('messages')
-    @UseGuards(AuthenticatedGuard)
-    @Post('group/:name')
-    createMessageInGroup(
-      @Body() createMessageDto : CreateMessageDto,
-      @Param('name') groupName: string
-    ){
-      return this.messagesService.createMessageInGroup(createMessageDto,groupName);
-    }
+    // @ApiTags('messages')
+    // @UseGuards(AuthenticatedGuard)
+    // @Post('group/:name')
+    // createMessageInGroup(
+    //   @Body() createMessageDto : CreateMessageDto,
+    //   @Param('name') groupName: string
+    // ){
+    //   return this.messagesService.createMessageInGroup(createMessageDto,groupName);
+    // }
 
     @ApiTags('Group')
     @UseGuards(AuthenticatedGuard)

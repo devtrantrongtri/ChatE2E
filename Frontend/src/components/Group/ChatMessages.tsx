@@ -5,9 +5,17 @@ type Message = {
     senderId: string;
     receiverId : string; 
     message : string;
+    participants : string[]
     avatarUrl ?: string;
   };
-  
+  type Data = {
+    groupName: string;
+    senderId: string;
+    receiverId : string; 
+    message : string;
+    success: boolean;
+    avatarUrl ?: string;
+  };
     
     // Props definition using TypeScript for better type checking
     interface ChatListProps {
@@ -17,7 +25,7 @@ type Message = {
     //   onChatClick: (Chat: string) => void;
   }
 const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Data[]>([]);
   const [loading, setLoading] = useState(false);
   const { socket } = useSocketContext();
   // useEffect(() => {
@@ -39,9 +47,9 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) =>
       console.log(`Emitting groupSocketConnected for group ${groupName}`);
       socket.emit('groupSocketConnected', groupName);
 
-      socket.on('groupMessageSent', (msg: Message) => {
-        // setMessages((prev) => [...prev, msg]);
-        console.log("update message", msg);
+      socket.on('groupMessageSent', (data: Data) => {
+        setMessages((prev : Data[]) => [...prev,data]);
+        console.log("update message", data);
       });
 
       return () => {
@@ -85,10 +93,10 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) =>
       el.scrollTop = el.scrollHeight;
     }
   }, [messages]);
-console.log('Messages loaded',messages);
+// console.log('Messages loaded',messages);
   return (
     <div id="messages" className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-      {messages.map((message : Message, index) => (
+      {messages.map((message : Data, index) => (
         <div key={index} className="chat-message">
           <div className={`flex items-end ${message.senderId === userId ? 'justify-end' : ''}`}>
             <div className={`flex flex-col space-y-2 text-xs max-w-xs mx-2 ${message.senderId === userId ? 'order-1 items-end' : 'order-2 items-start'}`}>
