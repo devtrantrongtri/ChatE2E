@@ -18,32 +18,41 @@ const SendMessageInGroup:React.FC<SendMessageProps> = ({ receiverId, senderId,gr
     setLoading(true);
     setMessageSent(message);
 
-
     try {
-      // const response = await fetch(`http://localhost:4041/messages/group/${groupName}`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   credentials: 'include',
-      //   body: JSON.stringify({ receiverId, senderId, message }),
-      // });
-      // const data = await response.json();
-      const data = {receiverId, senderId, message,groupName,success : true}
-      if (data.success) {
-        // Xử lý khi gửi tin nhắn thành công (ví dụ: cập nhật danh sách tin nhắn)
-        // handleUpdateMessageTrigger(); // Cập nhật danh sách tin nhắn
+      const data = {receiverId, senderId, message, groupName};
       socket?.emit("groupMessage", data);
-        setMessage(''); // Xóa nội dung tin nhắn sau khi gửi
-      } else {
-        console.error('Failed to send message:', data);
-      }
+      setMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
+      alert('Failed to send message, please try again!');
     } finally {
-      // console.log('hàm này được gọi');
       setLoading(false);
     }
+    // try {
+    //   // const response = await fetch(`http://localhost:4041/messages/group/${groupName}`, {
+    //   //   method: 'POST',
+    //   //   headers: {
+    //   //     'Content-Type': 'application/json',
+    //   //   },
+    //   //   credentials: 'include',
+    //   //   body: JSON.stringify({ receiverId, senderId, message }),
+    //   // });
+    //   // const data = await response.json();
+    //   const data = {receiverId, senderId, message,groupName,success : true}
+    //   if (data.success) {
+    //     // Xử lý khi gửi tin nhắn thành công (ví dụ: cập nhật danh sách tin nhắn)
+    //     // handleUpdateMessageTrigger(); // Cập nhật danh sách tin nhắn
+    //   socket?.emit("groupMessage", data);
+    //     setMessage(''); // Xóa nội dung tin nhắn sau khi gửi
+    //   } else {
+    //     console.error('Failed to send message:', data);
+    //   }
+    // } catch (error) {
+    //   console.error('Error sending message:', error);
+    // } finally {
+    //   // console.log('hàm này được gọi');
+    //   setLoading(false);
+    // }
   };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {

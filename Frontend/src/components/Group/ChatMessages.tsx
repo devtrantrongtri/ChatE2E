@@ -1,5 +1,6 @@
 import { useSocketContext } from '@/context/SocketContext';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
+import DOMPurify from 'dompurify';
 type Message = {
     _id: string;
     senderId: string;
@@ -24,7 +25,7 @@ type Message = {
       trigger:any
     //   onChatClick: (Chat: string) => void;
   }
-const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) => {
+const ChatMessages:React.FC<ChatListProps> = memo(({ groupName, userId, trigger }) => {
   const [messages, setMessages] = useState<Data[]>([]);
   const [loading, setLoading] = useState(false);
   const { socket } = useSocketContext();
@@ -94,9 +95,15 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) =>
     }
   }, [messages]);
 // console.log('Messages loaded',messages);
+  // Phần này có thể thêm sanitize dữ liệu nhận từ server
+  const sanitizedMessages = messages.map(msg => ({
+    ...msg,
+    message: DOMPurify.sanitize(msg.message)
+  }));
+
   return (
     <div id="messages" className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-      {messages.map((message : Data, index) => (
+      {sanitizedMessages.map((message : Data, index) => (
         <div key={index} className="chat-message">
           <div className={`flex items-end ${message.senderId === userId ? 'justify-end' : ''}`}>
             <div className={`flex flex-col space-y-2 text-xs max-w-xs mx-2 ${message.senderId === userId ? 'order-1 items-end' : 'order-2 items-start'}`}>
@@ -116,6 +123,6 @@ const ChatMessages:React.FC<ChatListProps> = ({ groupName , userId,trigger }) =>
       ))}
     </div>
   );
-};
+});
 
 export default ChatMessages;
