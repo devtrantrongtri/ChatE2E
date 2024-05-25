@@ -2,7 +2,7 @@
 import { SignalProtocolStore } from "./signalprotocolStore";
 import { createID } from "./CreateID";
 import { ServerSignal } from "./type";
-import { SessionBuilder, SignalProtocolAddress } from "@privacyresearch/libsignal-protocol-typescript";
+import { SessionBuilder, SessionCipher, SignalProtocolAddress } from "@privacyresearch/libsignal-protocol-typescript";
 
 
 const server = new ServerSignal;
@@ -33,5 +33,11 @@ const starterMessageBytes = Uint8Array.from([
     // build session
     const sessionBuilder = new SessionBuilder(store1,recipientAddress);
     await sessionBuilder.processPreKey(borisBundle)
-
+    // Now we can encrypt a messageto get a MessageType object
+    const senderSessionCipher = new SessionCipher(store1, recipientAddress)
+    const ciphertext = await senderSessionCipher.encrypt(starterMessageBytes.buffer)
+    console.log("circular ciphertext : ",ciphertext);
+    // The message is encrypted, now send it however you like.
+    // sendMessage('boris', 'adalheid', ciphertext)
+    
   }
