@@ -1,6 +1,8 @@
 'use client'
 import generateKeyKeyAndSaveToIndexDb, { getPublicKeyHex, } from '@/E2E/generateKey';
-
+import { generateKeyGroup } from '@/E2EGroup/generateKey';
+import test from '@/E2EGroup/test';
+import { testFunction } from '@/Test/testFunction';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -15,7 +17,9 @@ function SignUp() {
   const [error, setError] = useState("");
   const [pubKeyState, setPubKeyState] = useState<any>();
   const [userid, setUserid] = useState<any>();
-
+  // const testButton = () => {
+  //   console.log('testButton')
+  // }
   // Hook để sử dụng chức năng định tuyến
   const router = useRouter();
 
@@ -78,7 +82,11 @@ function SignUp() {
     if (resSendPublicKey.ok) {
       const responseData = await resSendPublicKey.json();
       console.log("Response data:", responseData);
-      router.push("/login");
+
+      // const testgenerateGroup =await generateKeyGroup(responseData.username);
+      // console.log("testgenerateGroup :",testgenerateGroup)
+
+      // router.push("/login"); // nhớ mở lại
     } else {
       setError("Có lỗi gì đó ở server. Vui lòng báo cho admin.");
     }
@@ -90,6 +98,17 @@ function SignUp() {
     }
   }, [pubKeyState, userid]);
 
+
+  
+  // console.log("UserId:", userid);
+
+
+
+
+
+
+
+  
   return (
     <div className="bg-slate-900 h-screen flex flex-col ">
     {/* <button className='bg-red-600 text-white' onClick={() => generateSharedKey()}>onclick</button>
@@ -147,6 +166,13 @@ function SignUp() {
             Sign Up
           </button>
         </form>
+        <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+            onClick={() => testFunction()}
+          >
+            test E2E
+          </button>
         {/* to Login */}
         <div className="mt-6 text-blue-500 text-center">
           Already have an account? <span> </span>

@@ -70,18 +70,6 @@ function Group({
 
 
   }, [params.userid, updateTrigger,selectedGroup]);
-  const myGroup = [
-    { _id: '2', groupName: 'Group2', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '1', groupName: 'Group1', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '3', groupName: 'Group3', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '4', groupName: 'Group4', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '5', groupName: 'Group5', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '6', groupName: 'Group6', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '7', groupName: 'Group7', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '8', groupName: 'Group8', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '9', groupName: 'Group9', avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" },
-    { _id: '10', groupName:'Group10',avatarUrl: 'https://cdn-icons-png.freepik.com/512/33/33308.png?ga=GA1.1.131752735.1714715621',groupDescription:"abc" }
-  ];
   
 const joinGroup = async(groupName: string) => {
   console.log(groupName);
@@ -223,26 +211,6 @@ const  handleUpdateMessageTrigger = async () => {
 
 <ChatMessages groupName={selectedGroup.groupName} userId={params.userid} trigger={updateTrigger}></ChatMessages>
 {/* tin nhắn ở đây */}
-{/* <div id="messages" className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-<div className="chat-message">
-    <div className="flex items-end">
-      <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
-        <div><span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">Can be verified on any platform using docker</span></div>
-      </div>
-      <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-1" />
-    </div>
-  </div>
-  <div className="chat-message">
-    <div className="flex items-end justify-end">
-      <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
-        <div><span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Your error message says permission denied, npm global installs must be given root privileges.</span></div>
-      </div>
-      <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-2" />
-    </div>
-  </div>
-  </div> */}
-
-
   <SendMessageInGroup senderId={params.userid} receiverId={selectedGroup._id} groupName={selectedGroup.groupName} handleUpdateMessageTrigger = {handleUpdateMessageTrigger}></SendMessageInGroup>
 
 </div>
@@ -402,3 +370,21 @@ export default Group
 //   </div>
 // </div>
 // </div>
+/* <div id="messages" className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+<div className="chat-message">
+    <div className="flex items-end">
+      <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+        <div><span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">Can be verified on any platform using docker</span></div>
+      </div>
+      <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-1" />
+    </div>
+  </div>
+  <div className="chat-message">
+    <div className="flex items-end justify-end">
+      <div className="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+        <div><span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Your error message says permission denied, npm global installs must be given root privileges.</span></div>
+      </div>
+      <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144" alt="My profile" className="w-6 h-6 rounded-full order-2" />
+    </div>
+  </div>
+  </div> */
