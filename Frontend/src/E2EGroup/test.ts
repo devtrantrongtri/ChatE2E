@@ -1,4 +1,4 @@
-import { SessionBuilder, SignalProtocolAddress } from "@privacyresearch/libsignal-protocol-typescript";
+import { SessionBuilder, SessionCipher, SignalProtocolAddress } from "@privacyresearch/libsignal-protocol-typescript";
 import { getFromStore } from "./store";
 import { SignalProtocolStore } from "./SignalProtocolStore";
 interface KeyPairType {
@@ -76,5 +76,10 @@ const startSessionWith = async (receipientName : string) => {
   console.log("sessionBuilder : " , sessionBuilder);
 
 } 
+
+
+
+
+
 
 export default test
