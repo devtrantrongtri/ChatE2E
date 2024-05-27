@@ -1,7 +1,7 @@
 'use client'
 import generateKeyKeyAndSaveToIndexDb, { getPublicKeyHex, } from '@/E2E/generateKey';
 import { generateKeyGroup } from '@/E2EGroup/generateKey';
-import { testD, testFunction } from '@/Test/testFunction';
+import {  testFunction } from '@/Test/testFunction';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -172,13 +172,13 @@ function SignUp() {
           >
             test E2E
           </button>
-        <button
+        {/* <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
             onClick={() => testD()}
           >
             descript Message
-          </button>
+          </button> */}
         {/* to Login */}
         <div className="mt-6 text-blue-500 text-center">
           Already have an account? <span> </span>

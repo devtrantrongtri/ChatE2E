@@ -45,4 +45,13 @@ export class ServerSignal {
             });
         }
     }
+    getKeyBundle(name: string): DeviceType | undefined {
+        const user = this.users.find(user => user.name === name);
+        return user ? user.data : undefined;
+    }
+
+    // Optionally add a method to remove a user or key bundle
+    removeKeyBundle(name: string): void {
+        this.users = this.users.filter(user => user.name !== name);
+    }
 }
